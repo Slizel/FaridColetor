@@ -1,7 +1,9 @@
-package faridnet.com.faridcoletor.Data.InventarioData
+package faridnet.com.faridcoletor.Repository
 
 import androidx.lifecycle.LiveData
-import faridnet.com.faridcoletor.Data.ProdutosData.Produtos
+import faridnet.com.faridcoletor.Data.InventarioDao
+import faridnet.com.faridcoletor.Model.Inventario
+import faridnet.com.faridcoletor.Model.Produtos
 
 class InventarioRepository (private val inventarioDao: InventarioDao) {
 

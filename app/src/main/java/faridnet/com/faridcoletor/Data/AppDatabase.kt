@@ -1,14 +1,12 @@
-package faridnet.com.faridcoletor.Data.Database
+package faridnet.com.faridcoletor.Data
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import faridnet.com.faridcoletor.Data.ContagnesData.Contagens
-import faridnet.com.faridcoletor.Data.ContagnesData.ContagensDao
-import faridnet.com.faridcoletor.Data.InventarioData.Inventario
-import faridnet.com.faridcoletor.Data.ProdutosData.Produtos
-import faridnet.com.faridcoletor.Data.ProdutosData.ProdutosDao
+import faridnet.com.faridcoletor.Model.Contagens
+import faridnet.com.faridcoletor.Model.Inventario
+import faridnet.com.faridcoletor.Model.Produtos
 
 @Database(entities = [Contagens::class,
                      Produtos::class,
@@ -23,7 +21,7 @@ abstract class AppDatabase: RoomDatabase() {
     companion object{
         private var INSTANCE: AppDatabase? = null
 
-        fun getDatabase(context: Context): AppDatabase{
+        fun getDatabase(context: Context): AppDatabase {
             val tempInstance = INSTANCE
             if (tempInstance != null){
                 return tempInstance

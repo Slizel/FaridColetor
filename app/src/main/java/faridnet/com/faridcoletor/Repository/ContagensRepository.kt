@@ -1,6 +1,8 @@
-package faridnet.com.faridcoletor.Data.ContagnesData
+package faridnet.com.faridcoletor.Repository
 
 import androidx.lifecycle.LiveData
+import faridnet.com.faridcoletor.Data.ContagensDao
+import faridnet.com.faridcoletor.Model.Contagens
 
 class ContagensRepository(private val contagensDao: ContagensDao) {
 
@@ -16,6 +18,11 @@ class ContagensRepository(private val contagensDao: ContagensDao) {
 
     suspend fun deleteContagens(contagens: Contagens) {
         contagensDao.deleteContagens(contagens)
+
+    }
+
+    suspend fun updateContagens(contagens: Contagens){
+        contagensDao.updateContagem(contagens)
 
     }
 

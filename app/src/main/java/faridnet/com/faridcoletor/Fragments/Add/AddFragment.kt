@@ -1,5 +1,8 @@
 package faridnet.com.faridcoletor.Fragments.Add
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import androidx.fragment.app.Fragment
@@ -8,21 +11,27 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import faridnet.com.faridcoletor.Data.ContagnesData.Contagens
-import faridnet.com.faridcoletor.Data.ProdutosData.Produtos
-import faridnet.com.faridcoletor.Data.ViewModel.AppViewModel
+import faridnet.com.faridcoletor.Data.AppDatabase
+import faridnet.com.faridcoletor.MainActivity
+import faridnet.com.faridcoletor.Model.Contagens
+import faridnet.com.faridcoletor.Model.Produtos
+import faridnet.com.faridcoletor.Viewmodel.AppViewModel
 import faridnet.com.faridcoletor.R
 import kotlinx.android.synthetic.main.fragment_add.*
 import kotlinx.android.synthetic.main.fragment_add.view.*
+import java.io.File
+import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 
-private lateinit var cAppViewModel: AppViewModel
-private lateinit var pAppViewModel: AppViewModel
 
 class AddFragment : Fragment() {
+
+    private lateinit var cAppViewModel: AppViewModel
+    private lateinit var pAppViewModel: AppViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,8 +49,17 @@ class AddFragment : Fragment() {
             insertDataToDatabase()
         }
 
+        view.add_btn2.setOnClickListener {
+            clearDatabase()
+        }
+
+        view.add_btn3.setOnClickListener {
+
+        }
+
         return view
     }
+
 
     // Database
     private fun insertDataToDatabase() {
@@ -98,5 +116,7 @@ class AddFragment : Fragment() {
         builder.setMessage("Tem certeza que deseja limpar o BD?")
         builder.create().show()
     }
+
+
 
 }

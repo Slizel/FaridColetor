@@ -1,8 +1,9 @@
-package faridnet.com.faridcoletor.Data.InventarioData
+package faridnet.com.faridcoletor.Data
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import faridnet.com.faridcoletor.Data.ProdutosData.Produtos
+import faridnet.com.faridcoletor.Model.Inventario
+import faridnet.com.faridcoletor.Model.Produtos
 
 @Dao
 interface InventarioDao {

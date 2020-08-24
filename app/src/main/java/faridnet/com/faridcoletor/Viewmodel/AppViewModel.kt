@@ -1,15 +1,15 @@
-package faridnet.com.faridcoletor.Data.ViewModel
+package faridnet.com.faridcoletor.Viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import faridnet.com.faridcoletor.Data.ContagnesData.Contagens
-import faridnet.com.faridcoletor.Data.ContagnesData.ContagensRepository
-import faridnet.com.faridcoletor.Data.Database.AppDatabase
-import faridnet.com.faridcoletor.Data.ProdutosData.Produtos
-import faridnet.com.faridcoletor.Data.ProdutosData.ProdutosRepository
+import faridnet.com.faridcoletor.Model.Contagens
+import faridnet.com.faridcoletor.Repository.ContagensRepository
+import faridnet.com.faridcoletor.Data.AppDatabase
+import faridnet.com.faridcoletor.Model.Produtos
+import faridnet.com.faridcoletor.Repository.ProdutosRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -70,6 +70,20 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     fun deleteAllProdutos() {
         viewModelScope.launch(Dispatchers.IO) {
             Prod_repository.deleteAllProdutos()
+        }
+    }
+
+    fun updateContagens(contagens: Contagens){
+        viewModelScope.launch(Dispatchers.IO) {
+            Cont_repository.updateContagens(contagens)
+
+        }
+
+    }
+
+    fun updateProdutos(produtos: Produtos){
+        viewModelScope.launch(Dispatchers.IO) {
+            Prod_repository.updateProdutos(produtos)
         }
     }
 

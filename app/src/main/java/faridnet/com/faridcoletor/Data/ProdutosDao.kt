@@ -1,12 +1,17 @@
-package faridnet.com.faridcoletor.Data.ProdutosData
+package faridnet.com.faridcoletor.Data
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import faridnet.com.faridcoletor.Model.Contagens
+import faridnet.com.faridcoletor.Model.Produtos
 
 @Dao
 interface ProdutosDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun addProduto(produtos: Produtos)
+
+    @Update
+    suspend fun updateProdutos(produtos: Produtos)
 
     //    Deleta somente 1 linha
     @Delete

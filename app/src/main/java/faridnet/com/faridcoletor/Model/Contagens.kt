@@ -1,8 +1,11 @@
-package faridnet.com.faridcoletor.Data.ContagnesData
+package faridnet.com.faridcoletor.Model
 
+import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 @Entity(
     tableName = "contagem_table"
 //    ,foreignKeys = [ForeignKey(
@@ -19,10 +22,8 @@ data class Contagens(
     val quantidade: Int,
     val dataHora: String
 
+) : Parcelable {
 
-
-
-) {
     override fun toString(): String {
         return "ID=$produtoId Qtd='$quantidade' Data='$dataHora\n"
     }

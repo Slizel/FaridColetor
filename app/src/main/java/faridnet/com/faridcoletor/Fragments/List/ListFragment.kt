@@ -9,9 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import faridnet.com.faridcoletor.Data.ContagnesData.Contagens
-import faridnet.com.faridcoletor.Data.ViewModel.AppViewModel
-import faridnet.com.faridcoletor.Fragments.Add.ListAdapter
+import faridnet.com.faridcoletor.Viewmodel.AppViewModel
 import faridnet.com.faridcoletor.R
 import kotlinx.android.synthetic.main.fragment_list.view.*
 
@@ -28,14 +26,6 @@ class ListFragment : Fragment() {
 
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_list, container, false)
-
-        view.floatingActionButton.setOnClickListener {
-            findNavController().navigate(R.id.action_listFragment_to_addFragment)
-        }
-
-
-
-
 
         //RecyclerView
         val adapter = ListAdapter()
@@ -55,6 +45,11 @@ class ListFragment : Fragment() {
         pAppViewModel.Prod_readAllData.observe(viewLifecycleOwner, Observer { produto ->
             adapter.setProdutosData(produto)
         })
+
+        view.floatingActionButton.setOnClickListener {
+            findNavController().navigate(R.id.action_listFragment_to_addFragment)
+        }
+
 
         return view
     }

@@ -1,13 +1,17 @@
-package faridnet.com.faridcoletor.Data.ContagnesData
+package faridnet.com.faridcoletor.Data
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import faridnet.com.faridcoletor.Model.Contagens
 
 @Dao
 interface ContagensDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun addContagem(contagens: Contagens)
+
+    @Update
+    suspend fun updateContagem(contagens: Contagens)
 
     // Deleta somente 1 linha
     @Delete
@@ -26,6 +30,7 @@ interface ContagensDao {
 
     @get:Query("SELECT * FROM contagem_table")
     val allContagens: List<Contagens>
+
 
 
 }
