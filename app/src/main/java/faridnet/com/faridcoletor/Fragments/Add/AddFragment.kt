@@ -53,9 +53,6 @@ class AddFragment : Fragment() {
             clearDatabase()
         }
 
-        view.add_btn3.setOnClickListener {
-
-        }
 
         return view
     }
