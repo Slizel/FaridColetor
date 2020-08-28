@@ -13,14 +13,19 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupActionBarWithNavController
 import faridnet.com.faridcoletor.Data.AppDatabase
+import faridnet.com.faridcoletor.Model.Produtos
+import faridnet.com.faridcoletor.Viewmodel.AppViewModel
 import kotlinx.android.synthetic.main.fragment_add.*
 import java.io.*
 
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var pAppViewModel: AppViewModel
 
     companion object {
 
@@ -32,6 +37,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        pAppViewModel = ViewModelProvider(this).get(AppViewModel::class.java)
 
         //request permission
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -67,6 +74,7 @@ class MainActivity : AppCompatActivity() {
             //readFileLineByLineUsingForEachLine("/mnt/sdcard/Download/PRODUTOS.txt")
 
             performFileSearch()
+
             //Import()
         }
 
@@ -111,12 +119,45 @@ class MainActivity : AppCompatActivity() {
 
         val file = File(input)
         val text = StringBuilder()
+
+
         try {
             val br = BufferedReader(FileReader(file))
             var line: String?
             while (br.readLine().also { line = it } != null) {
                 text.append(line)
                 text.append("\n")
+            }
+            br.close()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return text.toString()
+    }
+
+    private fun PopulateDB(input: String): String? {
+
+        val file = File(input)
+        val text = StringBuilder()
+
+        try {
+            val br = BufferedReader(FileReader(file))
+            var line: String?
+
+            var produtoId: String?
+            var codBarras: String?
+            var descricao: String?
+
+            while (br.readLine().also { line = it } != null) {
+
+                codBarras = line?.substring(0..15)
+                produtoId = line?.substring(16..23)
+                descricao = line?.substring(24..44)
+
+                var produto = Produtos(codBarras.toString().trim(), Integer.parseInt(produtoId.toString().trim()), descricao.toString().trim())
+
+                pAppViewModel.addProdutos(produto)
+
             }
             br.close()
         } catch (e: IOException) {
@@ -142,7 +183,7 @@ class MainActivity : AppCompatActivity() {
                 var path = uri!!.path
                 path = path!!.substring(path.indexOf(":") + 1)
                 Toast.makeText(this, "" + path, Toast.LENGTH_LONG).show()
-                importView.setText(readText(path))
+                PopulateDB(path)
             }
         }
     }

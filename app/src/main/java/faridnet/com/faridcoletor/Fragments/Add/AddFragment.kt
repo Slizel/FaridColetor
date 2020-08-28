@@ -1,8 +1,5 @@
 package faridnet.com.faridcoletor.Fragments.Add
 
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import androidx.fragment.app.Fragment
@@ -11,22 +8,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import faridnet.com.faridcoletor.Data.AppDatabase
-import faridnet.com.faridcoletor.MainActivity
 import faridnet.com.faridcoletor.Model.Contagens
 import faridnet.com.faridcoletor.Model.Produtos
 import faridnet.com.faridcoletor.Viewmodel.AppViewModel
 import faridnet.com.faridcoletor.R
 import kotlinx.android.synthetic.main.fragment_add.*
 import kotlinx.android.synthetic.main.fragment_add.view.*
-import java.io.File
-import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
-
 
 class AddFragment : Fragment() {
 
@@ -52,7 +43,6 @@ class AddFragment : Fragment() {
         view.add_btn2.setOnClickListener {
             clearDatabase()
         }
-
 
         return view
     }
@@ -92,6 +82,7 @@ class AddFragment : Fragment() {
             descricao
         ))
     }
+
 
     private fun clearDatabase() {
         //Alert Dialog

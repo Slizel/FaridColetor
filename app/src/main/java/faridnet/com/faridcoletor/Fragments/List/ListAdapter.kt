@@ -41,15 +41,12 @@ class ListAdapter : RecyclerView.Adapter<ListAdapter.MyViewHolder>() {
 
         holder.itemView.rowLayout.setOnClickListener {
 
-
             val action = ListFragmentDirections.actionListFragmentToUpdateFragment(
                 contagensItem,
                 produtosItem
             )
             holder.itemView.findNavController().navigate(action)
-
         }
-
     }
 
 

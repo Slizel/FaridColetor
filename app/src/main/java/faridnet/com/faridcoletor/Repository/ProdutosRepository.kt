@@ -2,7 +2,6 @@ package faridnet.com.faridcoletor.Repository
 
 import androidx.lifecycle.LiveData
 import faridnet.com.faridcoletor.Data.ProdutosDao
-import faridnet.com.faridcoletor.Model.Contagens
 import faridnet.com.faridcoletor.Model.Produtos
 
 class ProdutosRepository (private val produtosDao: ProdutosDao) {
@@ -12,6 +11,7 @@ class ProdutosRepository (private val produtosDao: ProdutosDao) {
     suspend fun addProduto(produtos: Produtos){
         produtosDao.addProduto(produtos)
     }
+
 
     suspend fun deleteAllProdutos(){
         produtosDao.deleteAllProdutos()
