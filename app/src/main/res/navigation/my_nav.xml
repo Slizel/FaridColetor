@@ -36,8 +36,5 @@
         <argument
             android:name="currentContagem"
             app:argType="faridnet.com.faridcoletor.Model.Contagens" />
-        <argument
-            android:name="currentProduto"
-            app:argType="faridnet.com.faridcoletor.Model.Produtos" />
     </fragment>
 </navigation>

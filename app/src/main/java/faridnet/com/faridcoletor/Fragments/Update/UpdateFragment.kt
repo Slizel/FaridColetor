@@ -11,7 +11,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import faridnet.com.faridcoletor.Model.Contagens
-import faridnet.com.faridcoletor.Model.Produtos
 import faridnet.com.faridcoletor.R
 import faridnet.com.faridcoletor.Viewmodel.AppViewModel
 import kotlinx.android.synthetic.main.fragment_update.*
@@ -37,9 +36,9 @@ class UpdateFragment : Fragment() {
         cAppViewModel = ViewModelProvider(this).get(AppViewModel::class.java)
         pAppViewModel = ViewModelProvider(this).get(AppViewModel::class.java)
 
-        view.updateCodBarras.setText(args.currentProduto.codBarras)
+        //view.updateCodBarras.setText(args.currentProduto.codBarras)
         view.updateQuantidade.setText(args.currentContagem.quantidade.toString())
-        view.updateDescricao.setText(args.currentProduto.descricao)
+        //view.updateDescricao.setText(args.currentProduto.descricao)
 
 
         view.update_btn.setOnClickListener {
@@ -50,22 +49,22 @@ class UpdateFragment : Fragment() {
     }
 
     private fun updateDb() {
-        val codBarras = updateCodBarras.text.toString()
+        //val codBarras = updateCodBarras.text.toString()
         val qtde = Integer.parseInt(updateQuantidade.text.toString())
-        val descricao = updateDescricao.text.toString()
+        //val descricao = updateDescricao.text.toString()
 
         val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
         val currentDate = sdf.format(Date())
 
 
-        if (inputCheck(codBarras, qtde.toString(), descricao)) {
+        if (inputCheck(qtde.toString())) {
             //Criar objeto
-            val updateContagem = Contagens(args.currentContagem.produtoId, qtde, currentDate)
+            val updateContagem = Contagens(0, qtde,currentDate)
 
-            val updateProduto = Produtos(codBarras,args.currentProduto.produtoId, descricao)
+            //val updateProduto = Produtos(codBarras,args.currentProduto.produtoId, descricao)
 
             cAppViewModel.updateContagens(updateContagem)
-            pAppViewModel.updateProdutos(updateProduto)
+            //pAppViewModel.updateProdutos(updateProduto)
 
             Toast.makeText(requireContext(), "Atualizado com sucesso!", Toast.LENGTH_SHORT).show()
 
@@ -79,9 +78,9 @@ class UpdateFragment : Fragment() {
 
     }
 
-    private fun inputCheck(codBarras: String, qtde: String, descricao: String): Boolean {
-        return !(TextUtils.isEmpty(codBarras) && TextUtils.isEmpty(qtde) && TextUtils.isEmpty(
-            descricao
+    private fun inputCheck(qtde: String): Boolean {
+        return !(TextUtils.isEmpty(qtde) && TextUtils.isEmpty(
+            qtde
         ))
     }
 

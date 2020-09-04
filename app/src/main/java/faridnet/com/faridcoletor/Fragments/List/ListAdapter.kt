@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.custom_row.view.*
 class ListAdapter : RecyclerView.Adapter<ListAdapter.MyViewHolder>() {
 
     private var contagensList = emptyList<Contagens>()
-    private var produtosList = emptyList<Produtos>()
+    // private var produtosList = emptyList<Produtos>()
 
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {}
@@ -32,19 +32,23 @@ class ListAdapter : RecyclerView.Adapter<ListAdapter.MyViewHolder>() {
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
 
         val contagensItem = contagensList[position]
-        val produtosItem = produtosList[position]
+        //val produtosItem = produtosList[position]
 
-        holder.itemView.codInternoTextView.text = produtosItem.produtoId.toString()
-        holder.itemView.codBarrasTextView.text = produtosItem.codBarras
+        //holder.itemView.codInternoTextView.text = produtosItem.produtoId.toString()
+        //holder.itemView.codBarrasTextView.text = produtosItem.codBarras
         holder.itemView.qtdeTextView.text = contagensItem.quantidade.toString()
-        holder.itemView.descricaoTextView.text = produtosItem.descricao
+        //holder.itemView.descricaoTextView.text = produtosItem.descricao
 
         holder.itemView.rowLayout.setOnClickListener {
 
 
+//            val action = ListFragmentDirections.actionListFragmentToUpdateFragment(
+//                contagensItem
+//               // , produtosItem
+//            )
+
             val action = ListFragmentDirections.actionListFragmentToUpdateFragment(
-                contagensItem,
-                produtosItem
+                contagensItem
             )
             holder.itemView.findNavController().navigate(action)
 
@@ -58,10 +62,10 @@ class ListAdapter : RecyclerView.Adapter<ListAdapter.MyViewHolder>() {
         notifyDataSetChanged()
     }
 
-    fun setProdutosData(produtos: List<Produtos>) {
-        this.produtosList = produtos
-        notifyDataSetChanged()
-    }
+//    fun setProdutosData(produtos: List<Produtos>) {
+//        this.produtosList = produtos
+//        notifyDataSetChanged()
+//    }
 
 
 }

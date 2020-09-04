@@ -21,6 +21,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     val Prod_readAllData: LiveData<List<Produtos>>
     private val Prod_repository: ProdutosRepository
 
+
     // Create a LiveData with a String
     val currentName: MutableLiveData<String> by lazy {
         MutableLiveData<String>()
@@ -30,10 +31,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
 
         val contagensDao = AppDatabase.getDatabase(application).contagensDao()
 
-        Cont_repository =
-            ContagensRepository(
-                contagensDao
-            )
+        Cont_repository = ContagensRepository(contagensDao)
         Cont_readAllData = Cont_repository.readAllData
 
     }
@@ -73,7 +71,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun updateContagens(contagens: Contagens){
+    fun updateContagens(contagens: Contagens) {
         viewModelScope.launch(Dispatchers.IO) {
             Cont_repository.updateContagens(contagens)
 
@@ -81,10 +79,20 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
 
     }
 
-    fun updateProdutos(produtos: Produtos){
+    fun updateProdutos(produtos: Produtos) {
         viewModelScope.launch(Dispatchers.IO) {
             Prod_repository.updateProdutos(produtos)
         }
+    }
+
+    suspend fun loadProdutobyCodBarra(codBarras: String): Produtos {
+
+        viewModelScope.launch(Dispatchers.IO) {
+            Prod_repository.loadProductByCodBarra(codBarras)
+        }
+
+        return Prod_repository.loadProductByCodBarra(codBarras)
+
     }
 
     //    fun deleteContagens(contagens: Contagens){
@@ -93,10 +101,5 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
 //        }
 //    }
 
-//        fun deleteProdutos(produtos: Produtos){
-//        viewModelScope.launch(Dispatchers.IO){
-//            Prod_repository.deleteProdutos(produtos)
-//        }
-//    }
 
 }

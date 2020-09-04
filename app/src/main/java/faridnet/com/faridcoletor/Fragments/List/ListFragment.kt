@@ -40,11 +40,12 @@ class ListFragment : Fragment() {
 
         })
 
-        //AppViewModel - > Produtos
-        pAppViewModel = ViewModelProvider(this).get(AppViewModel::class.java)
-        pAppViewModel.Prod_readAllData.observe(viewLifecycleOwner, Observer { produto ->
-            adapter.setProdutosData(produto)
-        })
+//        //AppViewModel - > Produtos
+//        pAppViewModel = ViewModelProvider(this).get(AppViewModel::class.java)
+//        pAppViewModel.Prod_readAllData.observe(viewLifecycleOwner, Observer { produto ->
+//            adapter.setProdutosData(produto)
+//        })
+
 
         view.floatingActionButton.setOnClickListener {
             findNavController().navigate(R.id.action_listFragment_to_addFragment)

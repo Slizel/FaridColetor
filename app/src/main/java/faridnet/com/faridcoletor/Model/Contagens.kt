@@ -2,8 +2,10 @@ package faridnet.com.faridcoletor.Model
 
 import android.os.Parcelable
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import kotlinx.android.parcel.Parcelize
+import java.text.SimpleDateFormat
 
 @Parcelize
 @Entity(
@@ -22,9 +24,15 @@ data class Contagens(
     val quantidade: Int,
     val dataHora: String
 
+
 ) : Parcelable {
+
+
 
     override fun toString(): String {
         return "ID=$produtoId Qtd='$quantidade' Data='$dataHora\n"
     }
+
+
+
 }
