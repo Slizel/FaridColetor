@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnFocusChangeListener
 import android.view.ViewGroup
+import android.widget.EditText
 
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -20,17 +21,20 @@ import faridnet.com.faridcoletor.Model.Contagens
 import faridnet.com.faridcoletor.Model.Produtos
 import faridnet.com.faridcoletor.R
 import faridnet.com.faridcoletor.Viewmodel.AppViewModel
+import kotlinx.android.synthetic.*
 import kotlinx.android.synthetic.main.fragment_add.*
 import kotlinx.android.synthetic.main.fragment_add.view.*
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlinx.android.synthetic.main.custom_row.*
 
 class AddFragment : Fragment() {
 
     private lateinit var cAppViewModel: AppViewModel
     private lateinit var pAppViewModel: AppViewModel
     lateinit var mProduto: Produtos
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,28 +48,20 @@ class AddFragment : Fragment() {
         pAppViewModel = ViewModelProvider(this).get(AppViewModel::class.java)
         cAppViewModel = ViewModelProvider(this).get(AppViewModel::class.java)
 
-        val txtEdit = view.editTextTextCodBarras
 
-        txtEdit.onFocusChangeListener = OnFocusChangeListener { v, hasFocus ->
-            if (!hasFocus) {
-                // code to execute when EditText loses focus
 
-                if (txtEdit.text.toString() != "") {
-                    lifecycleScope.launch {
+       val viewTextDescricao = view.ViewTextDescricao
+        //ViewTextDescricao.text = getString(R.string.descricao)
 
-                        val codBarras = editTextTextCodBarras.text.toString()
-
-                        val produto = pAppViewModel.loadProdutobyCodBarra(codBarras)
-                        if (produto != null) {
-
-                            ViewTextDescricao.text = produto.descricao
-
-                        }
-
-                    }
-                }
-            }
-        }
+       val txtEdit = view.editTextTextCodBarras
+//
+//        txtEdit.onFocusChangeListener = OnFocusChangeListener { v, hasFocus ->
+//            if (!hasFocus) {
+//                // code to execute when EditText loses focus
+//
+//
+//            }
+//        }
 
 //        val qtdeEdit = view.editTextQuantidade
 //        qtdeEdit.onFocusChangeListener = OnFocusChangeListener { v, hasFocus ->
@@ -76,26 +72,40 @@ class AddFragment : Fragment() {
 //            }
 //        }
 
-        editTextTextCodBarras.addTextChangedListener(object : TextWatcher {
+
+        txtEdit.addTextChangedListener(object : TextWatcher {
 
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                TODO("Not yet implemented")
+
             }
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                TODO("Not yet implemented")
+
+                if (txtEdit.text.toString() != "") {
+                    lifecycleScope.launch {
+
+                        val codBarras = editTextTextCodBarras.text.toString()
+
+                        val produto = pAppViewModel.loadProdutobyCodBarra(codBarras)
+                        if (produto != null) {
+                            view.editTextQuantidade.setTextIsSelectable(true)
+                            viewTextDescricao.text = produto.descricao
+                        }
+                        else {
+                            view.editTextQuantidade.setTextIsSelectable(false)
+                        }
+
+                    }
+                }
             }
 
             override fun afterTextChanged(p0: Editable?) {
-                TODO("Not yet implemented")
+
+                //viewTextDescricao.setText("")
+                viewTextDescricao.text = ""
             }
 
         })
-
-
-
-
-
 
         view.add_btn.setOnClickListener {
             insertDataToDatabase()
