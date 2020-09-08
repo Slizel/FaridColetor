@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.custom_row.view.*
 class ListAdapter : RecyclerView.Adapter<ListAdapter.MyViewHolder>() {
 
     private var contagensList = emptyList<Contagens>()
-    // private var produtosList = emptyList<Produtos>()
+   // private var produtosList = emptyList<Produtos>()
 
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {}
@@ -32,7 +32,8 @@ class ListAdapter : RecyclerView.Adapter<ListAdapter.MyViewHolder>() {
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
 
         val contagensItem = contagensList[position]
-        //val produtosItem = produtosList[position]
+       // val produtosItem = produtosList[position]
+
 
         //holder.itemView.codInternoTextView.text = produtosItem.produtoId.toString()
         //holder.itemView.codBarrasTextView.text = produtosItem.codBarras

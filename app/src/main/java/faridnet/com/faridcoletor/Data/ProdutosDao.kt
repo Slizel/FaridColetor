@@ -16,6 +16,9 @@ interface ProdutosDao {
     @Delete
     suspend fun deleteProdutos(produtos: Produtos)
 
+    @Query("SELECT * FROM product_table")
+    suspend fun findProduto() : List<Produtos>
+
     @Query("DELETE FROM product_table")
     suspend fun deleteAllProdutos()
 

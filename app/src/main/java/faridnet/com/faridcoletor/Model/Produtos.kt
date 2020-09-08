@@ -13,4 +13,11 @@ data class Produtos(
     val produtoId: Int,
     val descricao: String
 
-): Parcelable
+): Parcelable {
+
+    fun getrodutoId(): Int {
+        return if (this.produtoId == null) return 0
+        else return this.produtoId
+    }
+}
+
