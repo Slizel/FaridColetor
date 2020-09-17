@@ -59,7 +59,7 @@ class UpdateFragment : Fragment() {
 
         if (inputCheck(qtde.toString())) {
             //Criar objeto
-            val updateContagem = Contagens(0, qtde,currentDate)
+            val updateContagem = Contagens(0, qtde.toDouble(),currentDate)
 
             //val updateProduto = Produtos(codBarras,args.currentProduto.produtoId, descricao)
 

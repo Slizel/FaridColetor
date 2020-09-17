@@ -1,6 +1,8 @@
 package faridnet.com.faridcoletor.Data
 
+import androidx.annotation.Nullable
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.room.*
 import faridnet.com.faridcoletor.Model.Produtos
 
@@ -28,10 +30,6 @@ interface ProdutosDao {
     @Query("SELECT * FROM product_table where cast(codBarras as int) = cast(:codBarras as int)")
     suspend fun loadProductByCodBarra(codBarras: String): Produtos
 
-//    @Query("SELECT * FROM pro)
-//    fun searchAllProduct(query: String?): LiveData<List<Produtos>>
-
-
-
-
+//    @Query("SELECT * FROM product_table where cast(codBarras as int) = cast(:codBarras as int)")
+//    fun loadProductByCodBarra(codBarras: String): LiveData<Produtos>
 }

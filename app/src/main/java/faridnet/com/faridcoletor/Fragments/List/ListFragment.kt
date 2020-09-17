@@ -1,5 +1,6 @@
 package faridnet.com.faridcoletor.Fragments.List
 
+import ListAdapter
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater

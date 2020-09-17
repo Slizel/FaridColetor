@@ -1,10 +1,9 @@
-package faridnet.com.faridcoletor.Fragments.List
-
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import faridnet.com.faridcoletor.Fragments.List.ListFragmentDirections
 import faridnet.com.faridcoletor.Model.Contagens
 import faridnet.com.faridcoletor.Model.Produtos
 import faridnet.com.faridcoletor.R
@@ -12,8 +11,9 @@ import kotlinx.android.synthetic.main.custom_row.view.*
 
 class ListAdapter : RecyclerView.Adapter<ListAdapter.MyViewHolder>() {
 
+
     private var contagensList = emptyList<Contagens>()
-   // private var produtosList = emptyList<Produtos>()
+    private var produtosList = emptyList<Produtos>()
 
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {}
@@ -24,7 +24,6 @@ class ListAdapter : RecyclerView.Adapter<ListAdapter.MyViewHolder>() {
         )
     }
 
-
     override fun getItemCount(): Int {
         return contagensList.size
     }
@@ -32,16 +31,14 @@ class ListAdapter : RecyclerView.Adapter<ListAdapter.MyViewHolder>() {
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
 
         val contagensItem = contagensList[position]
-       // val produtosItem = produtosList[position]
+        val produtosItem = produtosList[position]
 
-
-        //holder.itemView.codInternoTextView.text = produtosItem.produtoId.toString()
-        //holder.itemView.codBarrasTextView.text = produtosItem.codBarras
+        //holder.itemView.codInternoTextView.text = contagensList.produtoId.toString()
+        holder.itemView.codBarrasTextView.text = produtosItem.codBarras
         holder.itemView.qtdeTextView.text = contagensItem.quantidade.toString()
-        //holder.itemView.descricaoTextView.text = produtosItem.descricao
+        holder.itemView.descricaoTextView.text = produtosItem.descricao
 
         holder.itemView.rowLayout.setOnClickListener {
-
 
 //            val action = ListFragmentDirections.actionListFragmentToUpdateFragment(
 //                contagensItem
@@ -52,21 +49,11 @@ class ListAdapter : RecyclerView.Adapter<ListAdapter.MyViewHolder>() {
                 contagensItem
             )
             holder.itemView.findNavController().navigate(action)
-
         }
-
     }
-
 
     fun setContagensData(contagens: List<Contagens>) {
         this.contagensList = contagens
         notifyDataSetChanged()
     }
-
-//    fun setProdutosData(produtos: List<Produtos>) {
-//        this.produtosList = produtos
-//        notifyDataSetChanged()
-//    }
-
-
 }

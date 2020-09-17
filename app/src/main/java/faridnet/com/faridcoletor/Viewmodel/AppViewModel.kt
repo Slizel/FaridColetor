@@ -1,6 +1,8 @@
 package faridnet.com.faridcoletor.Viewmodel
 
 import android.app.Application
+import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -23,7 +25,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
 
 
     // Create a LiveData with a String
-    val currentName: MutableLiveData<String> by lazy {
+    val currentProduto: MutableLiveData<String> by lazy {
         MutableLiveData<String>()
     }
 
@@ -39,10 +41,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     init {
         val produtosDao = AppDatabase.getDatabase(application).produtosDao()
 
-        Prod_repository =
-            ProdutosRepository(
-                produtosDao
-            )
+        Prod_repository = ProdutosRepository(produtosDao)
         Prod_readAllData = Prod_repository.readAllData
     }
 
@@ -57,7 +56,6 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             Prod_repository.addProduto(produtos)
         }
     }
-
 
     fun deleteAllContagens() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -74,9 +72,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     fun updateContagens(contagens: Contagens) {
         viewModelScope.launch(Dispatchers.IO) {
             Cont_repository.updateContagens(contagens)
-
         }
-
     }
 
     fun updateProdutos(produtos: Produtos) {
@@ -95,11 +91,13 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
 
     }
 
+//    fun loadProdutobyCodBarra(codBarras: String): LiveData<Produtos> {
+//        return Prod_repository.loadProductByCodBarra(codBarras)
+//    }
+
     //    fun deleteContagens(contagens: Contagens){
 //        viewModelScope.launch(Dispatchers.IO){
 //            Cont_repository.deleteContagens(contagens)
 //        }
 //    }
-
-
 }

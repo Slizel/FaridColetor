@@ -15,7 +15,7 @@ data class Produtos(
 
 ): Parcelable {
 
-    fun getrodutoId(): Int {
+    fun getprodutoId(): Int {
         return if (this.produtoId == null) return 0
         else return this.produtoId
     }

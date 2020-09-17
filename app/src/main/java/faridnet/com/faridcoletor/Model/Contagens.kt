@@ -1,8 +1,8 @@
 package faridnet.com.faridcoletor.Model
 
 import android.os.Parcelable
+import androidx.lifecycle.LiveData
 import androidx.room.Entity
-import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import kotlinx.android.parcel.Parcelize
 import java.text.SimpleDateFormat
@@ -19,15 +19,13 @@ import java.text.SimpleDateFormat
 
 data class Contagens(
 
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     val produtoId: Int,
-    val quantidade: Int,
+    val quantidade: Double,
     val dataHora: String
 
 
 ) : Parcelable {
-
-
 
     override fun toString(): String {
         return "ID=$produtoId Qtd='$quantidade' Data='$dataHora\n"
