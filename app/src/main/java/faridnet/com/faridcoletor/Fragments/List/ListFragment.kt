@@ -1,5 +1,6 @@
 package faridnet.com.faridcoletor.Fragments.List
 
+import ListAdapter
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -35,21 +36,21 @@ class ListFragment : Fragment() {
 
         //AppViewModel - > Contagens
         cAppViewModel = ViewModelProvider(this).get(AppViewModel::class.java)
-        cAppViewModel.Cont_readAllData.observe(viewLifecycleOwner, Observer { contagens ->
-            adapter.setContagensData(contagens)
+        cAppViewModel.Cont_readAllDatajoinContagemProduto.observe(viewLifecycleOwner, Observer { joinContagemProduto ->
+            adapter.setContagensData(joinContagemProduto)
 
         })
 
-        //AppViewModel - > Produtos
-        pAppViewModel = ViewModelProvider(this).get(AppViewModel::class.java)
-        pAppViewModel.Prod_readAllData.observe(viewLifecycleOwner, Observer { produto ->
-            adapter.setProdutosData(produto)
-        })
+//        //AppViewModel - > Produtos
+//        pAppViewModel = ViewModelProvider(this).get(AppViewModel::class.java)
+//        pAppViewModel.Prod_readAllData.observe(viewLifecycleOwner, Observer { produto ->
+//            adapter.setProdutosData(produto)
+//        })
+
 
         view.floatingActionButton.setOnClickListener {
             findNavController().navigate(R.id.action_listFragment_to_addFragment)
         }
-
 
         return view
     }

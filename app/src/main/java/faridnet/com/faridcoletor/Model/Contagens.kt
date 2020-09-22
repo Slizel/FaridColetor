@@ -17,9 +17,9 @@ import kotlinx.android.parcel.Parcelize
 
 data class Contagens(
 
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     val produtoId: Int,
-    val quantidade: Int,
+    val quantidade: Double,
     val dataHora: String
 
 ) : Parcelable {
