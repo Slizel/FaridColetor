@@ -1,9 +1,12 @@
 package faridnet.com.faridcoletor.Fragments.Add
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -43,6 +46,24 @@ class AddFragment : Fragment() {
 
         val viewTextDescricao = view.ViewTextDescricao
         val txtEdit = view.editTextTextCodBarras
+        val txtEdit2 = view.editTextQuantidade
+
+        txtEdit2.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
+            if (event != null && keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN) {
+
+
+                    txtEdit.requestFocus()
+                    insertDataToDatabase()
+                    Toast.makeText(requireContext(), "Adicionado com sucesso", Toast.LENGTH_LONG)
+                        .show()
+
+
+                return@OnKeyListener true
+
+            }
+            false
+        })
+
         //val txtEdit2 = view.editTextQuantidade
 
         txtEdit.addTextChangedListener(object : TextWatcher {
@@ -72,6 +93,24 @@ class AddFragment : Fragment() {
                 viewTextDescricao.text = ""
             }
         })
+
+//        txtEdit2.addTextChangedListener(object : TextWatcher {
+//            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+//            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+//
+//            var handler: Handler = Handler(Looper.getMainLooper() /*UI thread*/)
+//            var workRunnable: Runnable? = null
+//
+//            override fun afterTextChanged(p0: Editable?) {
+//
+//                handler.removeCallbacks(workRunnable)
+//                workRunnable = Runnable {
+//
+//                    txtEdit.requestFocus()
+//                }
+//                handler.postDelayed(workRunnable, 1200)
+//            }
+//        })
 
         view.add_btn.setOnClickListener {
             if (editTextTextCodBarras != null || editTextQuantidade != null) {
