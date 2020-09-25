@@ -34,6 +34,9 @@
             android:id="@+id/action_updateFragment_to_listFragment"
             app:destination="@id/listFragment" />
         <argument
+            android:name="currentJoinContagensProduto"
+            app:argType="faridnet.com.faridcoletor.Model.JoinContagemProduto" />
+        <argument
             android:name="currentContagem"
             app:argType="faridnet.com.faridcoletor.Model.Contagens" />
     </fragment>

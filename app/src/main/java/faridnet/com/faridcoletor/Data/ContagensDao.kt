@@ -12,7 +12,7 @@ interface ContagensDao {
     suspend fun addContagem(contagens: Contagens)
 
     @Update
-    suspend fun updateContagem(contagens: Contagens)
+    suspend fun updateContagem(joinContagemProduto: JoinContagemProduto)
 
     // Deleta somente 1 linha
     @Delete

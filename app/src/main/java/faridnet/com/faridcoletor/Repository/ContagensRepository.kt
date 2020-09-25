@@ -22,8 +22,7 @@ class ContagensRepository(private val contagensDao: ContagensDao) {
         contagensDao.deleteContagens(contagens)
     }
 
-    suspend fun updateContagens(contagens: Contagens){
-        contagensDao.updateContagem(contagens)
-
+    suspend fun updateContagens(joinContagemProduto: JoinContagemProduto){
+        contagensDao.updateContagem(joinContagemProduto)
     }
 }

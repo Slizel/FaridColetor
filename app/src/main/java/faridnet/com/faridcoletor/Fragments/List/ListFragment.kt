@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.fragment_list.view.*
 class ListFragment : Fragment() {
 
     private lateinit var  cAppViewModel: AppViewModel
-    private lateinit var  pAppViewModel: AppViewModel
+    private lateinit var  mAppViewModel: AppViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,16 +37,15 @@ class ListFragment : Fragment() {
         //AppViewModel - > Contagens
         cAppViewModel = ViewModelProvider(this).get(AppViewModel::class.java)
         cAppViewModel.Cont_readAllDatajoinContagemProduto.observe(viewLifecycleOwner, Observer { joinContagemProduto ->
-            adapter.setContagensData(joinContagemProduto)
+            adapter.setJoinContagensData(joinContagemProduto)
 
         })
 
-//        //AppViewModel - > Produtos
-//        pAppViewModel = ViewModelProvider(this).get(AppViewModel::class.java)
-//        pAppViewModel.Prod_readAllData.observe(viewLifecycleOwner, Observer { produto ->
-//            adapter.setProdutosData(produto)
-//        })
+        mAppViewModel = ViewModelProvider(this).get(AppViewModel::class.java)
+        mAppViewModel.Cont_readAllData.observe(viewLifecycleOwner, Observer { contagens ->
+            adapter.setContagensData(contagens)
 
+        })
 
         view.floatingActionButton.setOnClickListener {
             findNavController().navigate(R.id.action_listFragment_to_addFragment)

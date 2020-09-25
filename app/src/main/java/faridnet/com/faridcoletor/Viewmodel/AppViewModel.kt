@@ -1,8 +1,6 @@
 package faridnet.com.faridcoletor.Viewmodel
 
 import android.app.Application
-import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -86,9 +84,9 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun updateContagens(contagens: Contagens) {
+    fun updateContagens(joinContagemProduto: Contagens) {
         viewModelScope.launch(Dispatchers.IO) {
-            Cont_repository.updateContagens(contagens)
+            Cont_repository.updateContagens(joinContagemProduto)
         }
     }
 
