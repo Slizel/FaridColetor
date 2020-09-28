@@ -82,7 +82,7 @@ class MainActivity : AppCompatActivity() {
                 {
                     dialog.dismiss()
                 },
-                120000 // value in milliseconds
+                180000 // value in milliseconds
             )
 
         }

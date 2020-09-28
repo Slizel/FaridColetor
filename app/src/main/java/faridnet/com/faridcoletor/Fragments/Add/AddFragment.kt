@@ -50,8 +50,6 @@ class AddFragment : Fragment() {
 
         txtEdit2.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
             if (event != null && keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN) {
-
-
                     txtEdit.requestFocus()
                     insertDataToDatabase()
                     Toast.makeText(requireContext(), "Adicionado com sucesso", Toast.LENGTH_LONG)

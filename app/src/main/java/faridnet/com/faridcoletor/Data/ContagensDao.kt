@@ -31,7 +31,7 @@ interface ContagensDao {
     @get:Query("SELECT * FROM contagem_table")
     val allContagens: List<Contagens>
     
-    @Query("SELECT contagem_table.produtoId, Produtos.descricao, contagem_table.quantidade FROM contagem_table join (select distinct produtoId, descricao from product_table) Produtos on Produtos.produtoId = contagem_table.produtoId ORDER BY contagem_table.dataHora ASC")
+    @Query("SELECT contagem_table.produtoId, Produtos.descricao, contagem_table.quantidade FROM contagem_table join (select distinct produtoId, descricao from product_table) Produtos on Produtos.produtoId = contagem_table.produtoId ORDER BY 2 ASC")
     fun readAllDatajoinContagemProduto(): LiveData<List<JoinContagemProduto>>
 
 }

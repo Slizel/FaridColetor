@@ -21,10 +21,9 @@ import java.util.*
 
 class UpdateFragment : Fragment() {
 
-    //private val args by navArgs<UpdateFragmentArgs>()
+    private val args by navArgs<UpdateFragmentArgs>()
 
-    private lateinit var cAppViewModel: AppViewModel
-    private lateinit var pAppViewModel: AppViewModel
+    private lateinit var mAppViewModel: AppViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,13 +32,11 @@ class UpdateFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_update, container, false)
 
-        cAppViewModel = ViewModelProvider(this).get(AppViewModel::class.java)
-        pAppViewModel = ViewModelProvider(this).get(AppViewModel::class.java)
+        //cAppViewModel = ViewModelProvider(this).get(AppViewModel::class.java)
+        mAppViewModel = ViewModelProvider(this).get(AppViewModel::class.java)
 
-        //view.updateCodBarras.setText(args.currentProduto.codBarras)
-        //view.updateQuantidade.setText(args.currentContagem.quantidade.toString())
-        //view.updateDescricao.setText(args.currentProduto.descricao)
-
+        view.updateQuantidade.setText(args.currentJoin.contagemQuantidade.toString())
+        //view.updateQuantidade.setText(args.currentJoinContagensProduto.contagemQuantidade.toString())
 
         view.update_btn.setOnClickListener {
             updateDb()
@@ -49,33 +46,32 @@ class UpdateFragment : Fragment() {
     }
 
     private fun updateDb() {
-        //val codBarras = updateCodBarras.text.toString()
-        val qtde = Integer.parseInt(updateQuantidade.text.toString())
-        //val descricao = updateDescricao.text.toString()
 
+        val qtde = updateQuantidade.text.toString()
         val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
         val currentDate = sdf.format(Date())
 
-
-        if (inputCheck(qtde.toString())) {
+        if (inputCheck(qtde)) {
             //Criar objeto
-           // val updateContagem = Contagens(0, qtde.toDouble(),currentDate)
+            val updateContagem = Contagens(
+                args.currentJoin.produtoId,
+                qtde.toDouble(), currentDate
+            )
 
-            //val updateProduto = Produtos(codBarras,args.currentProduto.produtoId, descricao)
-
-           // cAppViewModel.updateContagens(updateContagem)
-            //pAppViewModel.updateProdutos(updateProduto)
+            mAppViewModel.updateContagens(updateContagem)
 
             Toast.makeText(requireContext(), "Atualizado com sucesso!", Toast.LENGTH_SHORT).show()
 
             //Navigate back
             findNavController().navigate(R.id.action_updateFragment_to_listFragment)
 
-        } else{
-
-            Toast.makeText(requireContext(), "Gentileza preencher todos os campos.", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(
+                requireContext(),
+                "Gentileza preencher todos os campos.",
+                Toast.LENGTH_SHORT
+            ).show()
         }
-
     }
 
     private fun inputCheck(qtde: String): Boolean {
@@ -83,6 +79,4 @@ class UpdateFragment : Fragment() {
             qtde
         ))
     }
-
-
 }
