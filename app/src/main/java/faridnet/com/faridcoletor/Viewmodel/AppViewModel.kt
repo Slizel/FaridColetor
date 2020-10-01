@@ -1,8 +1,6 @@
 package faridnet.com.faridcoletor.Viewmodel
 
 import android.app.Application
-import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -54,12 +52,12 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     }
 
 
-    fun readAllDatajoinContagemProduto(joinContagemProduto: JoinContagemProduto){
-        viewModelScope.launch(Dispatchers.IO) {
-            contJoin_repository.readAllDatajoinContagemProduto
-        }
-
-    }
+//    fun readAllDatajoinContagemProduto(joinContagemProduto: JoinContagemProduto){
+//        viewModelScope.launch(Dispatchers.IO) {
+//            contJoin_repository.readAllDatajoinContagemProduto
+//        }
+//
+//    }
 
 
     fun addContagens(contagens: Contagens) {
@@ -105,17 +103,18 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         }
 
         return Prod_repository.loadProductByCodBarra(codBarras)
-
     }
 
-//    fun loadProdutobyCodBarra(codBarras: String): LiveData<Produtos> {
-//        return Prod_repository.loadProductByCodBarra(codBarras)
-//    }
+    suspend fun loadContagens(produtoId: String): Contagens {
+        viewModelScope.launch(Dispatchers.IO) {
+            Cont_repository.loadContagens(produtoId)
+        }
+        return Cont_repository.loadContagens(produtoId)
+    }
 
-    //    fun deleteContagens(contagens: Contagens){
-//        viewModelScope.launch(Dispatchers.IO){
-//            Cont_repository.deleteContagens(contagens)
-//        }
-//    }
-
+    fun deleteContagens(contagens: Contagens) {
+        viewModelScope.launch(Dispatchers.IO) {
+            Cont_repository.deleteContagens(contagens)
+        }
+    }
 }

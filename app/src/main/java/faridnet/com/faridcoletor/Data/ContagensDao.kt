@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.*
 import faridnet.com.faridcoletor.Model.Contagens
 import faridnet.com.faridcoletor.Model.JoinContagemProduto
+import faridnet.com.faridcoletor.Model.Produtos
 
 @Dao
 interface ContagensDao {
@@ -33,5 +34,13 @@ interface ContagensDao {
     
     @Query("SELECT contagem_table.produtoId, Produtos.descricao, contagem_table.quantidade FROM contagem_table join (select distinct produtoId, descricao from product_table) Produtos on Produtos.produtoId = contagem_table.produtoId ORDER BY 2 ASC")
     fun readAllDatajoinContagemProduto(): LiveData<List<JoinContagemProduto>>
+
+    @Query("SELECT * FROM contagem_table where cast(produtoId as int) = cast(:produtoId as int)")
+    suspend fun loadContagens(produtoId: String): Contagens
+
+//    @Query("SELECT * FROM product_table where cast(codBarras as int) = cast(:codBarras as int)")
+//    suspend fun loadProductByCodBarra(codBarras: String): Produtos
+
+
 
 }

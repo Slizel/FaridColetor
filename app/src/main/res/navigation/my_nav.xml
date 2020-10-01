@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/listFragment"
         android:name="faridnet.com.faridcoletor.Fragments.List.ListFragment"
-        android:label="Lista da Contagem" >
+        android:label="Lista da Contagem">
         <action
             android:id="@+id/action_listFragment_to_addFragment"
             app:destination="@id/addFragment" />

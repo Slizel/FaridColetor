@@ -15,6 +15,7 @@
         android:ems="10"
         android:hint="CodBarras"
         android:inputType="number"
+        android:focusable="true"
         android:imeOptions="flagNoExtractUi"
         android:nextFocusForward="@+id/editTextQuantidade"
         app:layout_constraintEnd_toEndOf="parent"
@@ -22,20 +23,43 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/editTextQuantidade"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:id="@+id/linearlayoutAddFragment"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:ems="10"
-        android:hint="Quantidade"
-        android:inputType="numberDecimal"
-        android:imeOptions="flagNoExtractUi"
-        android:nextFocusUp="@+id/editTextQuantidade"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextCodBarras" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextTextCodBarras">
+
+        <EditText
+            android:id="@+id/editTextQuantidade"
+            android:layout_width="149dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_weight=".5"
+            android:ems="10"
+            android:hint="Quantidade"
+            android:imeOptions="actionGo"
+            android:inputType="numberDecimal"
+            android:nextFocusUp="@+id/editTextQuantidade" />
+
+        <TextView
+            android:id="@+id/ViewTextContagens"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:layout_marginTop="16dp"
+            android:ems="10"
+            android:hint="Qtd"
+            android:inputType="textPersonName"
+            android:textSize="20sp" />
+
+
+    </LinearLayout>
+
+
 
     <TextView
         android:id="@+id/ViewTextDescricao"
@@ -49,7 +73,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextQuantidade" />
+        app:layout_constraintTop_toBottomOf="@+id/linearlayoutAddFragment" />
 
     <Button
         android:id="@+id/add_btn"
@@ -62,25 +86,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ViewTextDescricao" />
 
-    <Button
-        android:id="@+id/add_btn2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="Clear DB"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/add_btn" />
+<!--    <Button-->
+<!--        android:id="@+id/add_btn2"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="24dp"-->
+<!--        android:text="Clear DB"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.5"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/add_btn" />-->
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/add_btn2">
-
-    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

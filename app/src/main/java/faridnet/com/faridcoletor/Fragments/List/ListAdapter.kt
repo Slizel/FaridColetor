@@ -12,7 +12,6 @@ import kotlinx.android.synthetic.main.custom_row.view.*
 class ListAdapter : RecyclerView.Adapter<ListAdapter.MyViewHolder>() {
 
     private var joinContagemProdutoList = emptyList<JoinContagemProduto>()
-    //private var contagensList = emptyList<Contagens>()
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {}
 
@@ -28,9 +27,6 @@ class ListAdapter : RecyclerView.Adapter<ListAdapter.MyViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-
-        //val contagensItem = contagensList[position]
-        //holder.itemView.qtdeTextView.text = contagensItem.quantidade.toString()
 
         val joinContagemProdutoItem = joinContagemProdutoList[position]
         holder.itemView.codBarrasTextView.text = joinContagemProdutoItem.produtoId.toString()

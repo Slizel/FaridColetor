@@ -2,7 +2,9 @@ package faridnet.com.faridcoletor.Repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import faridnet.com.faridcoletor.Data.ContagensDao
 import faridnet.com.faridcoletor.Data.ProdutosDao
+import faridnet.com.faridcoletor.Model.Contagens
 import faridnet.com.faridcoletor.Model.Produtos
 
 class ProdutosRepository(private val produtosDao: ProdutosDao) {

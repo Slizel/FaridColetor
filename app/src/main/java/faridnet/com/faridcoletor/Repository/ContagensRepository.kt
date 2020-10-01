@@ -24,6 +24,9 @@ class ContagensRepository(private val contagensDao: ContagensDao) {
 
     suspend fun updateContagens(contagens: Contagens){
         contagensDao.updateContagem(contagens)
+    }
 
+    suspend fun loadContagens(produtoId: String): Contagens {
+        return contagensDao.loadContagens(produtoId)
     }
 }

@@ -14,11 +14,14 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupActionBarWithNavController
 import faridnet.com.faridcoletor.Data.AppDatabase
+import faridnet.com.faridcoletor.Model.Contagens
 import faridnet.com.faridcoletor.Model.Produtos
 import faridnet.com.faridcoletor.Model.ProgressDialog
 import faridnet.com.faridcoletor.Viewmodel.AppViewModel
@@ -74,16 +77,11 @@ class MainActivity : AppCompatActivity() {
 
         } else if (id == R.id.add_action2) {
 
-            var dialog = ProgressDialog.progressDialog(this)
-            dialog.show()
+           // var dialog = ProgressDialog.progressDialog(this)
+           // dialog.show()
             performFileSearch()
 
-            Handler().postDelayed(
-                {
-                    dialog.dismiss()
-                },
-                180000 // value in milliseconds
-            )
+
 
         }
 
@@ -159,6 +157,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun performFileSearch() {
+        var dialog = ProgressDialog.progressDialog(this)
+        dialog.show()
 
         //Alert Dialog
         val builder = AlertDialog.Builder(this)
@@ -169,7 +169,17 @@ class MainActivity : AppCompatActivity() {
             intent.type = "text/*"
             startActivityForResult(intent, READ_REQUEST_CODE)
         }
-        builder.setNegativeButton("Não") { _, _ -> }
+
+        Handler().postDelayed(
+            {
+                dialog.dismiss()
+            },
+            180000 // value in milliseconds
+        )
+
+        builder.setNegativeButton("Não") { _, _ ->
+            dialog.dismiss()
+        }
         builder.setTitle("Importar Dados")
         builder.setMessage("Tem certeza que deseja importar os dados?")
         builder.create().show()

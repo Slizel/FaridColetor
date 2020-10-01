@@ -1,15 +1,16 @@
 package faridnet.com.faridcoletor.Fragments.Add
 
+import android.media.AudioAttributes
+import android.media.AudioManager
+import android.media.SoundPool
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
-import android.view.KeyEvent
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
@@ -25,10 +26,17 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
+
 class AddFragment : Fragment() {
 
     private lateinit var cAppViewModel: AppViewModel
     private lateinit var pAppViewModel: AppViewModel
+    private lateinit var mAppViewModel: AppViewModel
+
+    private var soundPool: SoundPool? = null
+    private var sound1 = 0
+    private var sound2 = 0
+
     private val model: AppViewModel by viewModels()
 
     override fun onCreateView(
@@ -39,6 +47,23 @@ class AddFragment : Fragment() {
         // Criar objeto da View Model
         pAppViewModel = ViewModelProvider(this).get(AppViewModel::class.java)
         cAppViewModel = ViewModelProvider(this).get(AppViewModel::class.java)
+        mAppViewModel = ViewModelProvider(this).get(AppViewModel::class.java)
+
+        soundPool = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            val audioAttributes = AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .build()
+            SoundPool.Builder()
+                .setMaxStreams(2)
+                .setAudioAttributes(audioAttributes)
+                .build()
+        } else {
+            SoundPool(2, AudioManager.STREAM_MUSIC, 0)
+        }
+
+        sound1 = soundPool!!.load(requireContext(), R.raw.beep, 1)
+        sound2 = soundPool!!.load(requireContext(), R.raw.triplebeep, 1)
 
 
         // Inflate the layout for this fragment
@@ -48,67 +73,115 @@ class AddFragment : Fragment() {
         val txtEdit = view.editTextTextCodBarras
         val txtEdit2 = view.editTextQuantidade
 
-        txtEdit2.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
-            if (event != null && keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN) {
-                    txtEdit.requestFocus()
-                    insertDataToDatabase()
-                    Toast.makeText(requireContext(), "Adicionado com sucesso", Toast.LENGTH_LONG)
-                        .show()
-
-
-                return@OnKeyListener true
-
-            }
-            false
-        })
-
-        //val txtEdit2 = view.editTextQuantidade
-
         txtEdit.addTextChangedListener(object : TextWatcher {
 
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                if (txtEdit.text.toString() != "") {
-                    lifecycleScope.launch {
-                        val codBarras = editTextTextCodBarras.text.toString()
-                        val produto = pAppViewModel.loadProdutobyCodBarra(codBarras)
 
-                        if (produto != null) {
-                            view.editTextQuantidade.setTextIsSelectable(true)
-                            viewTextDescricao.text =
-                                produto.produtoId.toString() + " - " + produto.descricao
-                        } else {
-                            view.editTextQuantidade.setTextIsSelectable(false)
-                            viewTextDescricao.text = ""
-                        }
-                    }
-                }
+//                txtEdit2.setOnKeyListener(object : View.OnKeyListener {
+//                    override fun onKey(v: View?, keyCode: Int, event: KeyEvent): Boolean {
+//                        // if the event is a key down event on the enter button
+//                        if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+
+                            if (txtEdit.text.toString() != "") {
+                                lifecycleScope.launch {
+                                    val codBarras = editTextTextCodBarras.text.toString()
+                                    val produto = pAppViewModel.loadProdutobyCodBarra(codBarras)
+
+                                    if (produto != null) {
+                                        playBeep()
+                                        view.editTextQuantidade.setTextIsSelectable(true)
+                                        viewTextDescricao.text =
+                                            produto.produtoId.toString() + " - " + produto.descricao
+                                    } else {
+                                        view.editTextQuantidade.setTextIsSelectable(false)
+                                        viewTextDescricao.text = ""
+                                    }
+                                }
+                            }
+
+//                            return true
+//                        }
+//                        return false
+//                    }
+//                })
             }
 
             override fun afterTextChanged(p0: Editable?) {
+                //Apaga o o TextView descrição qunado o valor do codBarras é inválido
                 viewTextDescricao.text = ""
+                lifecycleScope.launch {
+
+                    val prodId = editTextTextCodBarras.text.toString()
+                    val contagens = cAppViewModel.loadContagens(prodId)
+
+                    if (contagens != null) {
+                        playTripleBeep()
+                        // view.editTextQuantidade.setText(contagens.quantidade.toString())
+                        view.editTextQuantidade.setTextIsSelectable(true)
+                        ViewTextContagens.text = contagens.quantidade.toString()
+
+                        editTextTextCodBarras.error =
+                            "Já existe uma contagem gravada para este código"
+                        editTextQuantidade.error =
+                            "O que você digitar será somado a quantidade existente"
+
+                        //Se o ViewTextContagem tem valor é porque já existe um Id cadastrado com uma qtde
+
+                        txtEdit2.setOnKeyListener(object : View.OnKeyListener {
+                            override fun onKey(v: View?, keyCode: Int, event: KeyEvent): Boolean {
+                                // if the event is a key down event on the enter button
+                                if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+
+                                    if (ViewTextContagens.text != "") {
+
+                                        //Parametros do objeto Contagem para update
+                                        val qtde = editTextQuantidade.text.toString()
+                                        val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
+                                        val currentDate = sdf.format(Date())
+
+                                        //Edit text inicialmente é "", testar se foi colocado algum valor
+                                        if (editTextQuantidade.text.toString() != "") {
+                                            //Criar objeto
+                                            val updateContagem = Contagens(
+                                                prodId.toInt(),
+                                                qtde.toDouble() + contagens.quantidade,
+                                                currentDate
+                                            )
+
+                                            var soma = qtde.toDouble() + contagens.quantidade
+                                            ViewTextContagens.text = soma.toString()
+
+                                            //update DB
+                                            mAppViewModel.updateContagens(updateContagem)
+
+                                        }
+
+                                        Toast.makeText(
+                                            requireContext(),
+                                            "Soma realizada!",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                    }
+
+
+                                    return true
+                                }
+                                return false
+                            }
+                        })
+
+
+                    } else {
+                        view.editTextQuantidade.setTextIsSelectable(false)
+                        ViewTextContagens.text = ""
+                        txtEdit.requestFocus()
+                    }
+                }
+
             }
         })
-
-//        txtEdit2.addTextChangedListener(object : TextWatcher {
-//            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-//            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-//
-//            var handler: Handler = Handler(Looper.getMainLooper() /*UI thread*/)
-//            var workRunnable: Runnable? = null
-//
-//            override fun afterTextChanged(p0: Editable?) {
-//
-//                handler.removeCallbacks(workRunnable)
-//                workRunnable = Runnable {
-//
-//                    txtEdit.requestFocus()
-//                }
-//                handler.postDelayed(workRunnable, 1200)
-//            }
-//        })
 
         view.add_btn.setOnClickListener {
             if (editTextTextCodBarras != null || editTextQuantidade != null) {
@@ -116,11 +189,16 @@ class AddFragment : Fragment() {
             }
         }
 
-        view.add_btn2.setOnClickListener {
-            clearDatabase()
-        }
 
         return view
+    }
+
+    fun playBeep() {
+        soundPool!!.play(sound1, 1f, 1f, 0, 0, 1f)
+    }
+
+    fun playTripleBeep() {
+        soundPool!!.play(sound2, 1f, 1f, 0, 0, 1f)
     }
 
     // Database
@@ -179,5 +257,16 @@ class AddFragment : Fragment() {
         builder.setTitle("Limpar Banco de Dados")
         builder.setMessage("Tem certeza que deseja limpar o BD?")
         builder.create().show()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.main_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if(item.itemId == R.id.delete_all){
+            clearDatabase()
+        }
+        return super.onOptionsItemSelected(item)
     }
 }
