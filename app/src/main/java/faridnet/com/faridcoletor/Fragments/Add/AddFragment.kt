@@ -70,7 +70,9 @@ class AddFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_add, container, false)
 
         val viewTextDescricao = view.ViewTextDescricao
+
         val txtEdit = view.editTextTextCodBarras
+        txtEdit.requestFocus()
         val txtEdit2 = view.editTextQuantidade
 
         txtEdit.addTextChangedListener(object : TextWatcher {
@@ -79,33 +81,25 @@ class AddFragment : Fragment() {
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
-//                txtEdit2.setOnKeyListener(object : View.OnKeyListener {
-//                    override fun onKey(v: View?, keyCode: Int, event: KeyEvent): Boolean {
-//                        // if the event is a key down event on the enter button
-//                        if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
 
-                            if (txtEdit.text.toString() != "") {
-                                lifecycleScope.launch {
-                                    val codBarras = editTextTextCodBarras.text.toString()
-                                    val produto = pAppViewModel.loadProdutobyCodBarra(codBarras)
+                if (txtEdit.text.toString() != "") {
 
-                                    if (produto != null) {
-                                        playBeep()
-                                        view.editTextQuantidade.setTextIsSelectable(true)
-                                        viewTextDescricao.text =
-                                            produto.produtoId.toString() + " - " + produto.descricao
-                                    } else {
-                                        view.editTextQuantidade.setTextIsSelectable(false)
-                                        viewTextDescricao.text = ""
-                                    }
-                                }
-                            }
+                    lifecycleScope.launch {
+                        val codBarras = editTextTextCodBarras.text.toString()
+                        val produto = pAppViewModel.loadProdutobyCodBarra(codBarras)
 
-//                            return true
-//                        }
-//                        return false
-//                    }
-//                })
+                        if (produto != null) {
+                            playBeep()
+                            view.editTextQuantidade.setTextIsSelectable(true)
+                            viewTextDescricao.text =
+                                produto.produtoId.toString() + " - " + produto.descricao
+                        } else {
+                            view.editTextQuantidade.setTextIsSelectable(false)
+                            viewTextDescricao.text = ""
+                        }
+                    }
+
+                }
             }
 
             override fun afterTextChanged(p0: Editable?) {
@@ -186,9 +180,10 @@ class AddFragment : Fragment() {
         view.add_btn.setOnClickListener {
             if (editTextTextCodBarras != null || editTextQuantidade != null) {
                 insertDataToDatabase()
+                txtEdit2.setText("")
+                txtEdit.requestFocus()
             }
         }
-
 
         return view
     }
@@ -210,23 +205,31 @@ class AddFragment : Fragment() {
         if (inputCheck(codBarras, qtde)) {
 
             var pos = ViewTextDescricao.text.indexOf("-")
-            var input: CharSequence = ViewTextDescricao.getText().substring(0..pos - 2)
-            var prodId: String = input.toString()
+            if (pos > 0) {
+                var input: CharSequence = ViewTextDescricao.getText().substring(0..pos - 2)
+                var prodId: String = input.toString()
+
+                val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
+                val currentDate = sdf.format(Date())
 
 
-            val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
-            val currentDate = sdf.format(Date())
+                //Create Product Object
+                val contagem =
+                    Contagens(Integer.parseInt(prodId), qtde.toDouble(), currentDate.toString())
 
+                // Add Data to Database
+                cAppViewModel.addContagens(contagem)
 
-            //Create Product Object
-            val contagem =
-                Contagens(Integer.parseInt(prodId), qtde.toDouble(), currentDate.toString())
+                Toast.makeText(requireContext(), "Adicionado com sucesso", Toast.LENGTH_LONG).show()
+                //findNavController().navigate(R.id.action_addFragment_to_listFragment)
 
-            // Add Data to Database
-            cAppViewModel.addContagens(contagem)
+            } else {
+                editTextTextCodBarras.error =
+                    "Código não existe no arquivo"
 
-            Toast.makeText(requireContext(), "Adicionado com sucesso", Toast.LENGTH_LONG).show()
-            //findNavController().navigate(R.id.action_addFragment_to_listFragment)
+                editTextTextCodBarras.setText("")
+
+            }
 
         } else {
             Toast.makeText(requireContext(), "Preencha os campos, por gentileza", Toast.LENGTH_LONG)
@@ -264,7 +267,7 @@ class AddFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(item.itemId == R.id.delete_all){
+        if (item.itemId == R.id.delete_all) {
             clearDatabase()
         }
         return super.onOptionsItemSelected(item)
