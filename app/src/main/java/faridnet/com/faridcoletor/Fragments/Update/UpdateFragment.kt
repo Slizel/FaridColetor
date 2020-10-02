@@ -42,6 +42,12 @@ class UpdateFragment : Fragment() {
             updateDb()
         }
 
+        view.delete_btn.setOnClickListener{
+            deleteJoinContagem()
+        }
+
+        setHasOptionsMenu(true)
+
         return view
     }
 
@@ -80,16 +86,16 @@ class UpdateFragment : Fragment() {
         ))
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.main_menu, menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(item.itemId == R.id.delete_action){
-            deleteJoinContagem()
-        }
-        return super.onOptionsItemSelected(item)
-    }
+//    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+//        inflater.inflate(R.menu.main_menu, menu)
+//    }
+//
+//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//        if(item.itemId == R.id.delete_action){
+//            deleteJoinContagem()
+//        }
+//        return super.onOptionsItemSelected(item)
+//    }
 
     private fun deleteJoinContagem() {
         val builder = AlertDialog.Builder(requireContext())

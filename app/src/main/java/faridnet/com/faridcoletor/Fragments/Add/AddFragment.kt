@@ -11,8 +11,10 @@ import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.*
+import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.AppCompatEditText
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
@@ -22,7 +24,7 @@ import faridnet.com.faridcoletor.R
 import faridnet.com.faridcoletor.Viewmodel.AppViewModel
 import kotlinx.android.synthetic.main.fragment_add.*
 import kotlinx.android.synthetic.main.fragment_add.view.*
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -36,6 +38,7 @@ class AddFragment : Fragment() {
     private var soundPool: SoundPool? = null
     private var sound1 = 0
     private var sound2 = 0
+    private var sound3 = 0
 
     private val model: AppViewModel by viewModels()
 
@@ -49,22 +52,25 @@ class AddFragment : Fragment() {
         cAppViewModel = ViewModelProvider(this).get(AppViewModel::class.java)
         mAppViewModel = ViewModelProvider(this).get(AppViewModel::class.java)
 
+        activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+
+
         soundPool = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             val audioAttributes = AudioAttributes.Builder()
                 .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
                 .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                 .build()
             SoundPool.Builder()
-                .setMaxStreams(2)
+                .setMaxStreams(3)
                 .setAudioAttributes(audioAttributes)
                 .build()
         } else {
-            SoundPool(2, AudioManager.STREAM_MUSIC, 0)
+            SoundPool(3, AudioManager.STREAM_MUSIC, 0)
         }
 
         sound1 = soundPool!!.load(requireContext(), R.raw.beep, 1)
         sound2 = soundPool!!.load(requireContext(), R.raw.triplebeep, 1)
-
+        sound3 = soundPool!!.load(requireContext(), R.raw.successful, 1)
 
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_add, container, false)
@@ -72,10 +78,15 @@ class AddFragment : Fragment() {
         val viewTextDescricao = view.ViewTextDescricao
 
         val txtEdit = view.editTextTextCodBarras
-        txtEdit.requestFocus()
+        //txtEdit.requestFocus()
         val txtEdit2 = view.editTextQuantidade
 
+
+
         txtEdit.addTextChangedListener(object : TextWatcher {
+
+            var handler: Handler = Handler(Looper.getMainLooper() /*UI thread*/)
+            var workRunnable: Runnable? = null
 
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
@@ -89,7 +100,7 @@ class AddFragment : Fragment() {
                         val produto = pAppViewModel.loadProdutobyCodBarra(codBarras)
 
                         if (produto != null) {
-                            playBeep()
+
                             view.editTextQuantidade.setTextIsSelectable(true)
                             viewTextDescricao.text =
                                 produto.produtoId.toString() + " - " + produto.descricao
@@ -98,14 +109,22 @@ class AddFragment : Fragment() {
                             viewTextDescricao.text = ""
                         }
                     }
-
                 }
             }
+
 
             override fun afterTextChanged(p0: Editable?) {
                 //Apaga o o TextView descrição qunado o valor do codBarras é inválido
                 viewTextDescricao.text = ""
                 lifecycleScope.launch {
+
+
+                    handler.removeCallbacks(workRunnable)
+                    workRunnable = Runnable {
+
+                        txtEdit.requestFocus()
+                    }
+                    handler.postDelayed(workRunnable, 1200)
 
                     val prodId = editTextTextCodBarras.text.toString()
                     val contagens = cAppViewModel.loadContagens(prodId)
@@ -149,6 +168,8 @@ class AddFragment : Fragment() {
 
                                             //update DB
                                             mAppViewModel.updateContagens(updateContagem)
+                                            successfulBeep()
+                                            userVisibleHint = true
 
                                         }
 
@@ -158,7 +179,6 @@ class AddFragment : Fragment() {
                                             Toast.LENGTH_LONG
                                         ).show()
                                     }
-
 
                                     return true
                                 }
@@ -173,17 +193,24 @@ class AddFragment : Fragment() {
                         txtEdit.requestFocus()
                     }
                 }
-
             }
         })
+
+
+
+
 
         view.add_btn.setOnClickListener {
             if (editTextTextCodBarras != null || editTextQuantidade != null) {
                 insertDataToDatabase()
+                playBeep()
                 txtEdit2.setText("")
+                txtEdit.setText("")
                 txtEdit.requestFocus()
             }
         }
+
+        setHasOptionsMenu(true)
 
         return view
     }
@@ -194,6 +221,10 @@ class AddFragment : Fragment() {
 
     fun playTripleBeep() {
         soundPool!!.play(sound2, 1f, 1f, 0, 0, 1f)
+    }
+
+    fun successfulBeep() {
+        soundPool!!.play(sound3, 1f, 1f, 0, 0, 1f)
     }
 
     // Database
@@ -212,7 +243,6 @@ class AddFragment : Fragment() {
                 val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
                 val currentDate = sdf.format(Date())
 
-
                 //Create Product Object
                 val contagem =
                     Contagens(Integer.parseInt(prodId), qtde.toDouble(), currentDate.toString())
@@ -224,6 +254,7 @@ class AddFragment : Fragment() {
                 //findNavController().navigate(R.id.action_addFragment_to_listFragment)
 
             } else {
+
                 editTextTextCodBarras.error =
                     "Código não existe no arquivo"
 
@@ -263,6 +294,7 @@ class AddFragment : Fragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        menu.clear();
         inflater.inflate(R.menu.main_menu, menu)
     }
 
@@ -272,4 +304,20 @@ class AddFragment : Fragment() {
         }
         return super.onOptionsItemSelected(item)
     }
+
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        editTextQuantidade.setText("")
+        editTextTextCodBarras.setText("")
+        if (isVisibleToUser) {
+            if (getFragmentManager() != null) {
+                getFragmentManager()
+                    ?.beginTransaction()
+                    ?.detach(this)
+                    ?.attach(this)
+                    ?.commit();
+            }
+        }
+    }
+
 }

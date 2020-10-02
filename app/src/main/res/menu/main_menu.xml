@@ -11,7 +11,6 @@
 
     </item>
 
-
     <item
         android:id="@+id/add_action2"
         android:title="Import"
@@ -22,21 +21,11 @@
     </item>
 
     <item
-        android:id="@+id/delete_action"
-        android:title="Delete"
-        android:icon="@drawable/ic_baseline_delete_24"
-        android:iconTint="@android:color/white"
-        app:showAsAction="never">
-
-    </item>
-
-    <item
         android:id="@+id/delete_all"
         android:title="Reset"
-        android:icon="@drawable/ic_baseline_clear_all_24"
+        android:icon="@drawable/ic_baseline_delete_forever_24"
         android:iconTint="@android:color/white"
-        app:showAsAction="never">
-
+        app:showAsAction="always">
     </item>
 
 </menu>

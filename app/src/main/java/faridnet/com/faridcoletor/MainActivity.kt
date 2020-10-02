@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.Menu
 import android.view.MenuItem
+import android.view.Window
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
@@ -45,6 +46,7 @@ class MainActivity : AppCompatActivity() {
 
         pAppViewModel = ViewModelProvider(this).get(AppViewModel::class.java)
 
+
         //request permission
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
             != PackageManager.PERMISSION_GRANTED
@@ -63,7 +65,6 @@ class MainActivity : AppCompatActivity() {
         return navController.navigateUp() || super.onSupportNavigateUp()
     }
 
-
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
         return true
@@ -80,9 +81,6 @@ class MainActivity : AppCompatActivity() {
            // var dialog = ProgressDialog.progressDialog(this)
            // dialog.show()
             performFileSearch()
-
-
-
         }
 
         return super.onOptionsItemSelected(item)
@@ -208,7 +206,7 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == PERMISSON_REQUEST_STORAGE) {
             Toast.makeText(this, "Permission granted!", Toast.LENGTH_LONG).show()
         } else {
-            Toast.makeText(this, "PErmission not granted", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Permission not granted", Toast.LENGTH_LONG).show()
             finish()
         }
     }

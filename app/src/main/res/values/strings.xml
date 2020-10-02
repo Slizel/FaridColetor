@@ -2,4 +2,12 @@
     <string name="app_name">FaridColetor</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+    <string name="text_error">Erro</string>
+    <string name="text_success">Sucesso</string>
+    <string name="text_ok">OK</string>
+    <string name="text_cancel">Não</string>
+    <string name="are_you_sure">Deseja Continuar?</string>
+    <string name="text_yes">Sim</string>
 </resources>

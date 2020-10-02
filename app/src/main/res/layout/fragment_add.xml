@@ -11,14 +11,15 @@
         android:id="@+id/editTextTextCodBarras"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="150dp"
         android:ems="10"
-        android:hint="CodBarras"
-        android:inputType="number"
         android:focusable="true"
-        android:maxLength="13"
+        android:hint="CodBarras"
         android:imeOptions="flagNoExtractUi"
+        android:inputType="number"
+        android:maxLength="13"
         android:nextFocusForward="@+id/editTextQuantidade"
+        app:layout_constraintBottom_toTopOf="@+id/linearlayoutAddFragment"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -57,8 +58,6 @@
             android:hint="Qtd"
             android:inputType="textPersonName"
             android:textSize="20sp" />
-
-
     </LinearLayout>
 
 
@@ -69,7 +68,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:ems="10"
-        android:hint="Descrição"
+        android:hint="Quant."
         android:inputType="textPersonName"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
