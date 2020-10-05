@@ -15,7 +15,7 @@
         android:ems="10"
         android:focusable="true"
         android:hint="CodBarras"
-        android:imeOptions="flagNoExtractUi"
+        android:imeOptions="actionGo"
         android:inputType="number"
         android:maxLength="13"
         android:nextFocusForward="@+id/editTextQuantidade"
@@ -27,8 +27,8 @@
 
     <LinearLayout
         android:id="@+id/linearlayoutAddFragment"
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -43,23 +43,23 @@
             android:layout_weight=".5"
             android:ems="10"
             android:hint="Quantidade"
-            android:maxLength="6"
             android:imeOptions="actionGo"
             android:inputType="numberDecimal"
-            android:nextFocusUp="@+id/editTextQuantidade" />
+            android:maxLength="6"
+            android:nextFocusUp="@+id/editTextQuantidade"
+            android:nextFocusDown="@+id/add_btn" />
 
         <TextView
             android:id="@+id/ViewTextContagens"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight=".5"
             android:layout_marginTop="16dp"
+            android:layout_weight=".5"
             android:ems="10"
             android:hint="Qtd"
             android:inputType="textPersonName"
             android:textSize="20sp" />
     </LinearLayout>
-
 
 
     <TextView
@@ -87,15 +87,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ViewTextDescricao" />
 
-<!--    <Button-->
-<!--        android:id="@+id/add_btn2"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="24dp"-->
-<!--        android:text="Clear DB"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintHorizontal_bias="0.5"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/add_btn" />-->
+    <!--    <Button-->
+    <!--        android:id="@+id/add_btn2"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginTop="24dp"-->
+    <!--        android:text="Clear DB"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintHorizontal_bias="0.5"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toBottomOf="@+id/add_btn" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

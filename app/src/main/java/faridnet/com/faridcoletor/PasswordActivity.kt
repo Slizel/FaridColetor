@@ -53,12 +53,6 @@ class PasswordActivity : AppCompatActivity() {
             }
         }
 
-        setContentView(R.layout.activity_password)
-
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.settings_container, AddFragment())
-            .commit()
 
     }
 }
