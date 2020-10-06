@@ -5,30 +5,26 @@ import android.media.AudioManager
 import android.media.SoundPool
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.text.Editable
 import android.text.TextUtils
-import android.text.TextWatcher
 import android.view.*
-import android.view.inputmethod.EditorInfo
+import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.widget.AppCompatEditText
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import faridnet.com.faridcoletor.Model.Contagens
+import faridnet.com.faridcoletor.Model.Produtos
 import faridnet.com.faridcoletor.R
 import faridnet.com.faridcoletor.Viewmodel.AppViewModel
-import kotlinx.android.synthetic.main.custom_row.view.*
+import kotlinx.android.synthetic.main.custom_row.*
 import kotlinx.android.synthetic.main.fragment_add.*
 import kotlinx.android.synthetic.main.fragment_add.view.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
-
 
 class AddFragment : Fragment() {
 
@@ -42,21 +38,16 @@ class AddFragment : Fragment() {
     private var sound3 = 0
     private var sound4 = 0
 
-
     private val model: AppViewModel by viewModels()
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+
         // Criar objeto da View Model
         pAppViewModel = ViewModelProvider(this).get(AppViewModel::class.java)
         cAppViewModel = ViewModelProvider(this).get(AppViewModel::class.java)
         mAppViewModel = ViewModelProvider(this).get(AppViewModel::class.java)
 
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
-
 
         soundPool = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             val audioAttributes = AudioAttributes.Builder()
@@ -79,122 +70,133 @@ class AddFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_add, container, false)
 
+
         val viewTextDescricao = view.ViewTextDescricao
-        val txtEdit = view.editTextTextCodBarras
-        val txtEdit2 = view.editTextQuantidade
+        val ViewTextContagens = view.ViewTextContagens
+        val txtEditCodBarras = view.editTextTextCodBarras
+        val txtEditQuantidade = view.editTextQuantidade
 
+        //Altera a exibição do do imput type do edit text para mostrar numeros ao inves de ****
+        txtEditCodBarras.transformationMethod = null
+        txtEditQuantidade.transformationMethod = null
 
+        txtEditCodBarras.setOnFocusChangeListener { _, hasFocus ->
 
-        txtEdit.setOnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus && txtEditCodBarras.text.toString() != "") {
 
-            if (!hasFocus) {
-                if (txtEdit.text.toString() != "") {
-
-                    lifecycleScope.launch {
-                        val codBarras = editTextTextCodBarras.text.toString()
-                        val produto = pAppViewModel.loadProdutobyCodBarra(codBarras)
-
-                        if (produto != null) {
-                            view.editTextQuantidade.setTextIsSelectable(true)
-                            viewTextDescricao.text =
-                                produto.produtoId.toString() + " - " + produto.descricao
-
-                            val contagens =
-                                cAppViewModel.loadContagens(produto.produtoId.toString())
-
-                            if (contagens != null) {
-                                ViewTextContagens.text = contagens.quantidade.toString()
-                                playTripleBeep()
-
-                                editTextTextCodBarras.error =
-                                    "Já existe uma contagem gravada para este código"
-                                editTextQuantidade.error =
-                                    "O que você digitar será somado a quantidade existente"
-
-                                //Se o ViewTextContagem tem valor é porque já existe um Id cadastrado com uma qtde
-
-                                txtEdit2.setOnKeyListener(object : View.OnKeyListener {
-                                    override fun onKey(
-                                        v: View?,
-                                        keyCode: Int,
-                                        event: KeyEvent
-                                    ): Boolean {
-                                        // if the event is a key down event on the enter button
-                                        if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
-
-                                            if (ViewTextContagens.text != "") {
-
-                                                //Parametros do objeto Contagem para update
-                                                val qtde = editTextQuantidade.text.toString()
-                                                val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
-                                                val currentDate = sdf.format(Date())
-
-                                                //Edit text inicialmente é "", testar se foi colocado algum valor
-                                                if (editTextQuantidade.text.toString() != "") {
-                                                    //Criar objeto
-                                                    val updateContagem = Contagens(
-                                                        produto.produtoId,
-                                                        qtde.toDouble() + contagens.quantidade,
-                                                        currentDate
-                                                    )
-
-                                                    var soma =
-                                                        qtde.toDouble() + contagens.quantidade
-                                                    ViewTextContagens.text = soma.toString()
-
-                                                    //update DB
-                                                    mAppViewModel.updateContagens(updateContagem)
-                                                    successfulBeep()
-                                                    userVisibleHint = true
-                                                }
-                                                Toast.makeText(
-                                                    requireContext(),
-                                                    "Soma realizada!",
-                                                    Toast.LENGTH_LONG
-                                                ).show()
-                                            }
-                                            return true
-                                        }
-                                        return false
-                                    }
-                                })
-
-                            } else {
-                                //view.editTextQuantidade.setTextIsSelectable(false)
-                                ViewTextContagens.text = ""
-                                //txtEdit.requestFocus()
-                            }
-
-                        } else {
-                            view.editTextQuantidade.setTextIsSelectable(false)
-                            viewTextDescricao.text = ""
-
-                            //view.editTextTextCodBarras.requestFocus()
-                            editTextTextCodBarras.error =
-                                "Produto não encontrado"
-                            wrongBeep()
-                            Toast.makeText(
-                                requireContext(),
-                                "Produto não encontrado",
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
-                    }
+                lifecycleScope.launch {
+                    val codBarras = editTextTextCodBarras.text.toString()
+                    ConsultaCodBarras(codBarras)
                 }
+            }
+            else{
+                viewTextDescricao.text = ""
+                ViewTextContagens.text = ""
+                txtEditCodBarras.setText("")
+                txtEditQuantidade.setText("")
+
+                txtEditCodBarras.requestFocus()
             }
         }
 
-
-        view.add_btn.setOnClickListener {
-            if (editTextTextCodBarras != null || editTextQuantidade != null) {
-                insertDataToDatabase()
-                userVisibleHint = true
-            }
+        view.add_btn.setOnClickListener() {
+            btnAdd()
         }
 
         setHasOptionsMenu(true)
 
         return view
+    }
+
+    private fun LimpaCampos(){
+        val viewTextDescricao = view?.ViewTextDescricao
+        val ViewTextContagens = view?.ViewTextContagens
+        val txtEditCodBarras = view?.editTextTextCodBarras
+        val txtEditQuantidade = view?.editTextQuantidade
+
+        viewTextDescricao?.text = ""
+        ViewTextContagens?.text = ""
+        txtEditCodBarras?.setText("")
+        txtEditQuantidade?.setText("")
+
+        txtEditCodBarras?.requestFocus()
+    }
+
+    private fun ConsultaCodBarras(codBarras: String){
+        lifecycleScope.launch {
+            val produto= pAppViewModel.loadProdutobyCodBarra(codBarras)
+
+            if (produto != null) {
+                view?.ViewTextDescricao?.text ?: produto.produtoId.toString() + " - " + produto.descricao
+                val contagen = cAppViewModel.loadContagens(produto.produtoId.toString())
+                //beep produto encontrado
+
+                if (contagen != null){
+                    //beed contagem existe
+                    ViewTextContagens.text = contagen.quantidade.toString()
+                    playTripleBeep()
+                    editTextTextCodBarras.error = "Já existe uma contagem gravada para este código"
+                    editTextQuantidade.error = "O que você digitar será somado a quantidade existente"
+                }
+            }
+            else{
+                Toast.makeText(
+                    requireContext(),
+                    "Código não encontrado!",
+                    Toast.LENGTH_LONG
+                ).show()
+                wrongBeep()
+            }
+        }
+
+    }
+
+    private fun btnAdd(){
+        if (editTextTextCodBarras != null && editTextQuantidade != null && ViewTextContagens.text == null) {
+            insertDataToDatabase()
+
+
+        }
+        else if(editTextTextCodBarras != null && editTextQuantidade != null && ViewTextContagens.text != null) {
+            Soma()
+        }
+    }
+
+
+    private fun Soma() {
+        lifecycleScope.launch {
+            val produto= pAppViewModel.loadProdutobyCodBarra(editTextTextCodBarras.text.toString())
+
+            if (produto != null) {
+                view?.ViewTextDescricao?.text ?: produto.produtoId.toString() + " - " + produto.descricao
+                val contagen = cAppViewModel.loadContagens(produto.produtoId.toString())
+                if (contagen != null){
+                    val qtde = editTextQuantidade.text.toString()
+                    val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
+                    val currentDate = sdf.format(Date())
+
+                    if (editTextQuantidade.text.toString() != "") {
+                        //Criar objeto
+                        val updateContagem = Contagens(
+                            produto.produtoId,
+                            qtde.toDouble() + contagen.quantidade,
+                            currentDate
+                        )
+
+                        //update DB
+                        mAppViewModel.updateContagens(updateContagem)
+                        successfulBeep()
+                        userVisibleHint = true
+
+                        Toast.makeText(
+                            requireContext(),
+                            "Soma realizada!",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+            }
+        }
     }
 
     fun playBeep() {
@@ -220,7 +222,6 @@ class AddFragment : Fragment() {
         //var descricao = ViewTextDescricao.text.toString()
 
         if (inputCheck(codBarras, qtde)) {
-
             var pos = ViewTextDescricao.text.indexOf("-")
             if (pos > 0) {
                 var input: CharSequence = ViewTextDescricao.getText().substring(0..pos - 2)
@@ -236,15 +237,8 @@ class AddFragment : Fragment() {
                 // Add Data to Database
                 cAppViewModel.addContagens(contagem)
                 playBeep()
-
                 Toast.makeText(requireContext(), "Adicionado com sucesso", Toast.LENGTH_LONG).show()
-                //findNavController().navigate(R.id.action_addFragment_to_listFragment)
-
             } else {
-
-//                editTextTextCodBarras.error =
-//                    "Código não existe no arquivo"
-
                 wrongBeep()
                 Toast.makeText(requireContext(), "Código não existe no arquivo", Toast.LENGTH_LONG)
                     .show()
@@ -283,7 +277,7 @@ class AddFragment : Fragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        menu.clear();
+        menu.clear()
         inflater.inflate(R.menu.main_menu, menu)
     }
 

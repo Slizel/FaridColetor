@@ -10,29 +10,23 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.Menu
 import android.view.MenuItem
-import android.view.Window
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupActionBarWithNavController
 import faridnet.com.faridcoletor.Data.AppDatabase
-import faridnet.com.faridcoletor.Model.Contagens
 import faridnet.com.faridcoletor.Model.Produtos
 import faridnet.com.faridcoletor.Model.ProgressDialog
 import faridnet.com.faridcoletor.Viewmodel.AppViewModel
-import kotlinx.android.synthetic.main.fragment_add.*
 import java.io.*
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var pAppViewModel: AppViewModel
-
 
     companion object {
 
@@ -45,7 +39,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         pAppViewModel = ViewModelProvider(this).get(AppViewModel::class.java)
-
 
         //request permission
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -67,24 +60,25 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
+        menu?.clear()
         return true
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val id = item.itemId;
+
+        val id = item.itemId
         if (id == R.id.add_action) {
             export()
 
         } else if (id == R.id.add_action2) {
 
-           // var dialog = ProgressDialog.progressDialog(this)
-           // dialog.show()
             performFileSearch()
         }
 
         return super.onOptionsItemSelected(item)
     }
+
 
     fun export() {
 
