@@ -15,6 +15,7 @@ import faridnet.com.faridcoletor.R
 import faridnet.com.faridcoletor.Viewmodel.AppViewModel
 import kotlinx.android.synthetic.main.fragment_update.*
 import kotlinx.android.synthetic.main.fragment_update.view.*
+import kotlinx.android.synthetic.main.password_dialog.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -42,8 +43,8 @@ class UpdateFragment : Fragment() {
             updateDb()
         }
 
-        view.delete_btn.setOnClickListener{
-            deleteJoinContagem()
+        view.delete_btn.setOnClickListener {
+            deletarItem()
         }
 
         //setHasOptionsMenu(false)
@@ -86,23 +87,48 @@ class UpdateFragment : Fragment() {
         ))
     }
 
-    private fun deleteJoinContagem() {
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setPositiveButton("Sim") { _, _ ->
+    private fun deletarItem() {
 
-            val deleteContagem = Contagens(args.currentJoin.produtoId,
-            args.currentJoin.contagemQuantidade.toDouble(), "")
+        val mDialogView =
+            LayoutInflater.from(requireContext()).inflate(R.layout.password_dialog, null)
 
-            mAppViewModel.deleteContagens(deleteContagem)
+        val mBuilder =
+            androidx.appcompat.app.AlertDialog.Builder(requireContext()).setCancelable(false)
+                .setView(mDialogView)
+                .setTitle("Deletar Item")
+                .setMessage("Peça a senha para o responsável do balanço. Essa ação não é reversível!")
+        val mAlertDialog = mBuilder.show()
 
-            Toast.makeText(requireContext(), "Deletado com sucesso!", Toast.LENGTH_SHORT).show()
+        mDialogView.dialogLoginBtn.setOnClickListener {
 
-            findNavController().navigate(R.id.action_updateFragment_to_listFragment)
+            val calander: Calendar = Calendar.getInstance()
+            var dia = calander.get(Calendar.DAY_OF_MONTH)
+            var mes = calander.get(Calendar.MONTH) + 1
+
+            val senha = (dia + 20).toString() + (mes + 11).toString()
+
+            val password = mDialogView.dialogPasswEt.text.toString()
+
+            if (password == senha) {
+                mAlertDialog.dismiss()
+
+                val deleteContagem = Contagens(
+                    args.currentJoin.produtoId,
+                    args.currentJoin.contagemQuantidade.toDouble(), ""
+                )
+
+                mAppViewModel.deleteContagens(deleteContagem)
+
+                Toast.makeText(requireContext(), "Item deletado com sucesso!", Toast.LENGTH_SHORT)
+                    .show()
+
+                findNavController().navigate(R.id.action_updateFragment_to_listFragment)
+
+
+            } else {
+                Toast.makeText(requireContext(), "Senha Inválida!", Toast.LENGTH_SHORT).show()
+                mAlertDialog.dismiss()
+            }
         }
-
-        builder.setNegativeButton("Não") { _, _ -> }
-        builder.setTitle("Deletar?")
-        builder.setMessage("Você tem certeza de que irá deletar?")
-        builder.create().show()
     }
 }

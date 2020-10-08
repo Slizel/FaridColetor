@@ -46,10 +46,9 @@
             android:hint="Quantidade"
             android:imeOptions="actionGo"
             android:inputType="numberPassword"
-            android:digits="1234567890"
             android:maxLength="6"
-            android:nextFocusUp="@+id/editTextQuantidade"
-            android:nextFocusDown="@+id/add_btn" />
+            android:nextFocusForward="@+id/add_btn"
+            />
 
         <TextView
             android:id="@+id/ViewTextContagens"
@@ -70,6 +69,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:ems="10"
+        android:focusable="false"
         android:hint="Quant."
         android:inputType="textPersonName"
         android:textSize="20sp"
@@ -84,6 +84,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:text="Adicionar"
+        android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.357"

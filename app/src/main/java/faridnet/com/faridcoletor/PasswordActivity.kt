@@ -1,10 +1,12 @@
 package faridnet.com.faridcoletor
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import faridnet.com.faridcoletor.Fragments.Add.AddFragment
 import kotlinx.android.synthetic.main.password_dialog.view.*
 import kotlinx.android.synthetic.main.password_dialog.view.*
@@ -31,7 +33,7 @@ class PasswordActivity : AppCompatActivity() {
             var dia = calander.get(Calendar.DAY_OF_MONTH)
             var mes = calander.get(Calendar.MONTH) + 1
 
-              // For API 26 or higher
+            // For API 26 or higher
 //            val current = LocalDateTime.now()
 //            var formatter = DateTimeFormatter.ofPattern("MM")
 //
@@ -48,6 +50,9 @@ class PasswordActivity : AppCompatActivity() {
 
             if (password == senha) {
                 mAlertDialog.dismiss()
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+
             } else {
                 Toast.makeText(this, "Senha Inválida!", Toast.LENGTH_SHORT).show()
             }

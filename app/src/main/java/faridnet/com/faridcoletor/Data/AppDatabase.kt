@@ -5,12 +5,10 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import faridnet.com.faridcoletor.Model.Contagens
-import faridnet.com.faridcoletor.Model.Inventario
 import faridnet.com.faridcoletor.Model.Produtos
 
 @Database(entities = [Contagens::class,
-                     Produtos::class,
-                     Inventario::class],
+                     Produtos::class],
                      version = 1, exportSchema = false)
 
 abstract class AppDatabase: RoomDatabase() {
