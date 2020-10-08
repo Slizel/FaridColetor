@@ -67,7 +67,6 @@ class AddFragment : Fragment() {
         } else {
             SoundPool(4, AudioManager.STREAM_MUSIC, 0)
         }
-
         sound1 = soundPool!!.load(requireContext(), R.raw.beep, 1)
         sound2 = soundPool!!.load(requireContext(), R.raw.triplebeep, 1)
         sound3 = soundPool!!.load(requireContext(), R.raw.successful, 1)
@@ -133,13 +132,9 @@ class AddFragment : Fragment() {
 
             }
 
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-                // TODO Auto-generated method stub
-            }
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
 
-            override fun afterTextChanged(s: Editable) {
-                // TODO Auto-generated method stub
-            }
+            override fun afterTextChanged(s: Editable) {}
         })
 
         txtEditCodBarras.setOnFocusChangeListener { _, hasFocus ->
@@ -191,13 +186,12 @@ class AddFragment : Fragment() {
                                         if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
                                              if(editTextQuantidade.text.toString() != ""){
                                             insertDataToDatabase()
+                                                 LimpaCampos()
                                             }
-
                                             return true
                                         }
                                     return false
                                 } })
-
 
                             val contagens = cAppViewModel.loadContagens(produto.produtoId.toString())
 
@@ -236,7 +230,8 @@ class AddFragment : Fragment() {
                                                     //update DB
                                                     mAppViewModel.updateContagens(updateContagem)
                                                     successfulBeep()
-                                                    userVisibleHint = true
+                                                    //userVisibleHint = true
+                                                    LimpaCampos()
                                                 }
                                                 Toast.makeText(
                                                     requireContext(),
@@ -264,11 +259,13 @@ class AddFragment : Fragment() {
                             editTextTextCodBarras.error =
                                 "Produto não encontrado"
                             wrongBeep()
+
                             Toast.makeText(
                                 requireContext(),
                                 "Produto não encontrado",
                                 Toast.LENGTH_LONG
                             ).show()
+                            LimpaCampos()
                         }
                     }
                 }
@@ -309,6 +306,7 @@ class AddFragment : Fragment() {
                     "Código não encontrado!",
                     Toast.LENGTH_LONG
                 ).show()
+                LimpaCampos()
                 wrongBeep()
             }
         }
@@ -340,7 +338,8 @@ class AddFragment : Fragment() {
                                     //update DB
                                     mAppViewModel.updateContagens(updateContagem)
                                     successfulBeep()
-                                    userVisibleHint = true
+                                    //userVisibleHint = true
+                                    LimpaCampos()
 
                                     Toast.makeText(
                                         requireContext(),
@@ -379,7 +378,8 @@ class AddFragment : Fragment() {
                 cAppViewModel.addContagens(contagem)
                 playBeep()
                 Toast.makeText(requireContext(), "Adicionado com sucesso", Toast.LENGTH_LONG).show()
-                userVisibleHint = true
+                //userVisibleHint = true
+                LimpaCampos()
             } else {
                 wrongBeep()
                 Toast.makeText(requireContext(), "Código não existe no arquivo", Toast.LENGTH_LONG)
