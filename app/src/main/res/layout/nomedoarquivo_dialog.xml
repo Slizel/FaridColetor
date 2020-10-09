@@ -7,9 +7,9 @@
     android:padding="10dp">
 
     <EditText
-        android:id="@+id/dialogPasswEt"
-        android:hint="Digite a Senha"
-        android:inputType="numberPassword"
+        android:id="@+id/nomeDoArquivo"
+        android:hint="Digite o nome do arquivo"
+        android:inputType="text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
@@ -19,7 +19,7 @@
         android:orientation="horizontal"
         android:gravity="center">
         <Button
-            android:id="@+id/dialogLoginBtn"
+            android:id="@+id/confirmaNomeDoArquivoBtn"
             android:text="Confirmar"
             style="@style/Base.Widget.AppCompat.Button.Colored"
             android:layout_width="wrap_content"

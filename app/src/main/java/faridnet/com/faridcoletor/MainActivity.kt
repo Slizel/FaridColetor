@@ -8,8 +8,12 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.Button
+import android.widget.EditText
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
@@ -22,16 +26,23 @@ import faridnet.com.faridcoletor.Data.AppDatabase
 import faridnet.com.faridcoletor.Model.Produtos
 import faridnet.com.faridcoletor.Model.ProgressDialog
 import faridnet.com.faridcoletor.Viewmodel.AppViewModel
+import kotlinx.android.synthetic.main.nomedoarquivo_dialog.*
+import kotlinx.android.synthetic.main.nomedoarquivo_dialog.view.*
+import kotlinx.android.synthetic.main.password_dialog.view.*
+import kotlinx.android.synthetic.main.password_dialog.view.dialogLoginBtn
 import java.io.*
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var pAppViewModel: AppViewModel
+    private lateinit var cAppViewModel: AppViewModel
+    private lateinit var btnNomeArquivo: Button
 
     companion object {
 
-        private val PERMISSON_REQUEST_STORAGE = 1000
-        private val READ_REQUEST_CODE = 42
+        private const val PERMISSON_REQUEST_STORAGE = 1000
+        private const val READ_REQUEST_CODE = 42
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,6 +50,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         pAppViewModel = ViewModelProvider(this).get(AppViewModel::class.java)
+        cAppViewModel = ViewModelProvider(this).get(AppViewModel::class.java)
+        //btnNomeArquivo = confirmaNomeDoArquivoBtn
+
 
         //request permission
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -60,55 +74,125 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
-        menu?.clear()
+        // menu?.clear()
         return true
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.add_action -> {
+                passwordInputExport()
+            }
+            R.id.add_action2 -> {
+                performFileSearch()
+            }
+            R.id.delete_all -> {
+                clearDB()
+            }
+            R.id.delete_contagnesTable -> {
+                clearContagens()
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
 
-        val id = item.itemId
-        if (id == R.id.add_action) {
-            export()
 
-        } else if (id == R.id.add_action2) {
+    fun passwordInputExport() {
 
-            performFileSearch()
+        val mDialogView = LayoutInflater.from(this).inflate(R.layout.password_dialog, null)
+
+        val mBuilder =
+            androidx.appcompat.app.AlertDialog.Builder(this).setCancelable(false)
+                .setView(mDialogView)
+                .setTitle("Exportar lista de contagens")
+                .setMessage("Peça a senha para o responsável do balanço!")
+        val mAlertDialog = mBuilder.show()
+
+        mDialogView.dialogLoginBtn.setOnClickListener {
+
+            val calander: Calendar = Calendar.getInstance()
+            val dia = calander.get(Calendar.DAY_OF_MONTH)
+            val mes = calander.get(Calendar.MONTH) + 1
+
+            val senha = (dia + 20).toString() + (mes + 11).toString()
+
+            val password = mDialogView.dialogPasswEt.text.toString()
+
+            if (password == senha) {
+                mAlertDialog.dismiss()
+
+
+                export()
+
+                Toast.makeText(this, "Compartilhamento iniciado!", Toast.LENGTH_SHORT)
+                    .show()
+
+            } else {
+                Toast.makeText(this, "Senha Inválida!", Toast.LENGTH_SHORT).show()
+                mAlertDialog.dismiss()
+            }
         }
 
-        return super.onOptionsItemSelected(item)
+
     }
 
 
     fun export() {
 
-        Thread {
+            Thread {
 
-            val db = AppDatabase.getDatabase(this).contagensDao().allContagens
+                val db = AppDatabase.getDatabase(this).contagensDao().allContagens
 
-            try {
-                //saving the file into device
-                val out: FileOutputStream = openFileOutput("data.csv", Context.MODE_PRIVATE)
-                out.write(db.toString().toByteArray())
-                out.close()
+                runOnUiThread {
+                    var filename: String
+                    val mDialogView = LayoutInflater.from(this).inflate(R.layout.nomedoarquivo_dialog, null)
+                    val mBuilder = AlertDialog.Builder(this).setCancelable(false)
+                        .setView(mDialogView)
+                        .setTitle("Digite o nome do arquivo")
+                        .setMessage("Exemplo de nomeclatura: Seção A ou Seção A-F-R ou Seção A-Z")
+                    val mAlertDialog = mBuilder.show()
 
-                //exporting
-                val context: Context = applicationContext
-                val filelocation = File(filesDir, "data.csv")
-                val path: Uri = FileProvider.getUriForFile(
-                    context,
-                    "faridnet.com.faridcoletor",
-                    filelocation
-                )
-                val fileIntent = Intent(Intent.ACTION_SEND)
-                fileIntent.type = "text/csv"
-                fileIntent.putExtra(Intent.EXTRA_SUBJECT, "Data")
-                fileIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                fileIntent.putExtra(Intent.EXTRA_STREAM, path)
-                startActivity(Intent.createChooser(fileIntent, "Send mail"))
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+                    mDialogView.confirmaNomeDoArquivoBtn.setOnClickListener {
+
+
+                            if (mDialogView.nomeDoArquivo.text.toString() != "") {
+
+                                try {
+
+
+                                filename = mDialogView.nomeDoArquivo.text.toString()
+
+                                val out: FileOutputStream = openFileOutput("$filename.csv", Context.MODE_PRIVATE)
+                                out.write(db.toString().toByteArray())
+                                out.close()
+
+                                val context: Context = applicationContext
+                                val filelocation = File(filesDir, "$filename.csv")
+                                val path: Uri = FileProvider.getUriForFile(
+                                    context,
+                                    "faridnet.com.faridcoletor",
+                                    filelocation
+                                )
+                                    mAlertDialog.dismiss()
+
+                                val fileIntent = Intent(Intent.ACTION_SEND)
+                                fileIntent.type = "text/csv"
+                                fileIntent.putExtra(Intent.EXTRA_SUBJECT, "Data")
+                                fileIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                fileIntent.putExtra(Intent.EXTRA_STREAM, path)
+                                startActivity(Intent.createChooser(fileIntent, "Send mail"))
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
+                                }
+
+
+
+                            } else {
+                                mAlertDialog.dismiss()
+                            }
+                    }
+                }
 
         }.start()
     }
@@ -188,6 +272,77 @@ class MainActivity : AppCompatActivity() {
                 path = path!!.substring(path.indexOf(":") + 1)
                 Toast.makeText(this, "" + path, Toast.LENGTH_LONG).show()
                 PopulateDB(path)
+            }
+        }
+    }
+
+    private fun clearDB() {
+
+        val mDialogView =
+            LayoutInflater.from(this).inflate(R.layout.password_dialog, null)
+
+        val mBuilder = AlertDialog.Builder(this).setCancelable(false)
+            .setView(mDialogView)
+            .setTitle("Limpar Banco de Dados")
+            .setMessage("Peça a senha para o responsável do balanço. Essa ação não é reversível!")
+        val mAlertDialog = mBuilder.show()
+
+        mDialogView.dialogLoginBtn.setOnClickListener {
+
+            val calander: Calendar = Calendar.getInstance()
+            var dia = calander.get(Calendar.DAY_OF_MONTH)
+            var mes = calander.get(Calendar.MONTH) + 1
+
+            val senha = (dia + 20).toString() + (mes + 11).toString()
+
+            val password = mDialogView.dialogPasswEt.text.toString()
+
+            if (password == senha) {
+                mAlertDialog.dismiss()
+
+                cAppViewModel.deleteAllContagens()
+                pAppViewModel.deleteAllProdutos()
+
+                Toast.makeText(this, "Banco foi limpo", Toast.LENGTH_SHORT).show()
+
+            } else {
+                Toast.makeText(this, "Senha Inválida!", Toast.LENGTH_SHORT).show()
+                mAlertDialog.dismiss()
+            }
+        }
+    }
+
+    private fun clearContagens() {
+
+        val mDialogView =
+            LayoutInflater.from(this).inflate(R.layout.password_dialog, null)
+
+        val mBuilder = AlertDialog.Builder(this).setCancelable(false)
+            .setView(mDialogView)
+            .setTitle("Limpar Lista de Contagens")
+            .setMessage("Peça a senha para o responsável do balanço. Essa ação não é reversível!")
+        val mAlertDialog = mBuilder.show()
+
+        mDialogView.dialogLoginBtn.setOnClickListener {
+
+            val calander: Calendar = Calendar.getInstance()
+            var dia = calander.get(Calendar.DAY_OF_MONTH)
+            var mes = calander.get(Calendar.MONTH) + 1
+
+            val senha = (dia + 20).toString() + (mes + 11).toString()
+
+            val password = mDialogView.dialogPasswEt.text.toString()
+
+            if (password == senha) {
+                mAlertDialog.dismiss()
+
+                cAppViewModel.deleteAllContagens()
+
+                Toast.makeText(this, "Banco foi limpo", Toast.LENGTH_SHORT).show()
+
+            } else {
+                Toast.makeText(this, "Senha Inválida!", Toast.LENGTH_SHORT).show()
+                mAlertDialog.dismiss()
             }
         }
     }

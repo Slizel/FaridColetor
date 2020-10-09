@@ -45,9 +45,9 @@
             android:ems="10"
             android:hint="Quantidade"
             android:imeOptions="actionGo"
-            android:inputType="numberPassword"
+            android:inputType="number"
             android:maxLength="6"
-            android:nextFocusForward="@+id/add_btn"
+
             />
 
         <TextView
@@ -84,23 +84,12 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:text="Adicionar"
-        android:focusable="true"
+        android:focusable="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.357"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ViewTextDescricao"
         app:layout_constraintVertical_bias="0.07" />
-
-    <!--    <Button-->
-    <!--        android:id="@+id/add_btn2"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginTop="24dp"-->
-    <!--        android:text="Clear DB"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintHorizontal_bias="0.5"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toBottomOf="@+id/add_btn" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

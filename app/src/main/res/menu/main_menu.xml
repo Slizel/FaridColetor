@@ -21,11 +21,18 @@
     </item>
 
     <item
-        android:id="@+id/delete_all"
-        android:title="Reset"
-        android:icon="@drawable/ic_baseline_delete_forever_24"
+        android:id="@+id/delete_contagnesTable"
+        android:title="Limpar Lista de Contagens"
+        android:icon="@drawable/ic_baseline_delete_24"
         android:iconTint="@android:color/white"
-        app:showAsAction="always">
+        app:showAsAction="ifRoom">
     </item>
 
+    <item
+        android:id="@+id/delete_all"
+        android:title="Resetar Banco de Dados"
+        android:icon="@drawable/ic_baseline_delete_forever_24"
+        android:iconTint="@android:color/white"
+        app:showAsAction="ifRoom">
+    </item>
 </menu>

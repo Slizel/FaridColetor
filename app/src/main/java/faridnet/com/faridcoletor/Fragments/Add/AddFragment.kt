@@ -399,53 +399,17 @@ class AddFragment : Fragment() {
         ) || TextUtils.isEmpty(qtde))
     }
 
-
-    private fun clearDB() {
-
-        val mDialogView =
-            LayoutInflater.from(requireContext()).inflate(R.layout.password_dialog, null)
-
-        val mBuilder = AlertDialog.Builder(requireContext()).setCancelable(false)
-            .setView(mDialogView)
-            .setTitle("Limpar Banco de Dados")
-            .setMessage("Peça a senha para o responsável do balanço. Essa ação não é reversível!")
-        val mAlertDialog = mBuilder.show()
-
-        mDialogView.dialogLoginBtn.setOnClickListener {
-
-            val calander: Calendar = Calendar.getInstance()
-            var dia = calander.get(Calendar.DAY_OF_MONTH)
-            var mes = calander.get(Calendar.MONTH) + 1
-
-            val senha = (dia + 20).toString() + (mes + 11).toString()
-
-            val password = mDialogView.dialogPasswEt.text.toString()
-
-            if (password == senha) {
-                mAlertDialog.dismiss()
-
-                cAppViewModel.deleteAllContagens()
-                pAppViewModel.deleteAllProdutos()
-
-                Toast.makeText(requireContext(), "Banco foi limpo", Toast.LENGTH_SHORT).show()
-
-            } else {
-                Toast.makeText(requireContext(), "Senha Inválida!", Toast.LENGTH_SHORT).show()
-                mAlertDialog.dismiss()
-            }
-        }
-    }
-
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         menu.clear()
         inflater.inflate(R.menu.main_menu, menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.delete_all) {
-            clearDB()
-        }
-        return super.onOptionsItemSelected(item)
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        menu.findItem(R.id.delete_all).isVisible = false
+        menu.findItem(R.id.add_action).isVisible = false
+        menu.findItem(R.id.add_action2).isVisible = false
+        menu.findItem(R.id.delete_contagnesTable).isVisible = false
+        super.onPrepareOptionsMenu(menu)
     }
 
     private fun LimpaCampos() {
