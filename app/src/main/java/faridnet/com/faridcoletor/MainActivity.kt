@@ -11,9 +11,7 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.Button
-import android.widget.EditText
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
@@ -26,10 +24,8 @@ import faridnet.com.faridcoletor.Data.AppDatabase
 import faridnet.com.faridcoletor.Model.Produtos
 import faridnet.com.faridcoletor.Model.ProgressDialog
 import faridnet.com.faridcoletor.Viewmodel.AppViewModel
-import kotlinx.android.synthetic.main.nomedoarquivo_dialog.*
 import kotlinx.android.synthetic.main.nomedoarquivo_dialog.view.*
 import kotlinx.android.synthetic.main.password_dialog.view.*
-import kotlinx.android.synthetic.main.password_dialog.view.dialogLoginBtn
 import java.io.*
 import java.util.*
 
@@ -51,8 +47,7 @@ class MainActivity : AppCompatActivity() {
 
         pAppViewModel = ViewModelProvider(this).get(AppViewModel::class.java)
         cAppViewModel = ViewModelProvider(this).get(AppViewModel::class.java)
-        //btnNomeArquivo = confirmaNomeDoArquivoBtn
-
+        //btnNomeArquivo = confirmaNomeDoArquivoBtn.
 
         //request permission
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -86,6 +81,7 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.add_action2 -> {
                 performFileSearch()
+                //openDirectory()
             }
             R.id.delete_all -> {
                 clearDB()
@@ -96,7 +92,6 @@ class MainActivity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
-
 
     fun passwordInputExport() {
 
@@ -137,7 +132,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-
     fun export() {
 
             Thread {
@@ -150,7 +144,7 @@ class MainActivity : AppCompatActivity() {
                     val mBuilder = AlertDialog.Builder(this).setCancelable(false)
                         .setView(mDialogView)
                         .setTitle("Digite o nome do arquivo")
-                        .setMessage("Exemplo de nomeclatura: Seção A ou Seção A-F-R ou Seção A-Z")
+                        .setMessage("Exemplo de nomeclatura: SecaoA, SecaoABC, SecaoAF. OBS: Não são aceitos caracteres especiais, numeros e espaço neste campo!")
                     val mAlertDialog = mBuilder.show()
 
                     mDialogView.confirmaNomeDoArquivoBtn.setOnClickListener {
@@ -197,40 +191,6 @@ class MainActivity : AppCompatActivity() {
         }.start()
     }
 
-    private fun PopulateDB(input: String): String? {
-
-        val file = File(input)
-        val text = StringBuilder()
-
-        try {
-            val br = BufferedReader(FileReader(file))
-            var line: String?
-
-            var produtoId: String?
-            var codBarras: String?
-            var descricao: String?
-
-            while (br.readLine().also { line = it } != null) {
-
-                codBarras = line?.substring(0..15)
-                produtoId = line?.substring(16..23)
-                descricao = line?.substring(24..44)
-
-                var produto = Produtos(
-                    codBarras.toString().trim(),
-                    Integer.parseInt(produtoId.toString().trim()),
-                    descricao.toString().trim()
-                )
-
-                pAppViewModel.addProdutos(produto)
-
-            }
-            br.close()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-        return text.toString()
-    }
 
     private fun performFileSearch() {
         var dialog = ProgressDialog.progressDialog(this)
@@ -240,7 +200,7 @@ class MainActivity : AppCompatActivity() {
         val builder = AlertDialog.Builder(this)
         builder.setPositiveButton("Sim") { _, _ ->
 
-            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+            val intent = Intent(Intent.ACTION_GET_CONTENT)
             intent.addCategory(Intent.CATEGORY_OPENABLE)
             intent.type = "text/*"
             startActivityForResult(intent, READ_REQUEST_CODE)
@@ -250,7 +210,7 @@ class MainActivity : AppCompatActivity() {
             {
                 dialog.dismiss()
             },
-            180000 // value in milliseconds
+            20000 // value in milliseconds
         )
 
         builder.setNegativeButton("Não") { _, _ ->
@@ -269,11 +229,86 @@ class MainActivity : AppCompatActivity() {
 
                 val uri = data.data
                 var path = uri!!.path
-                path = path!!.substring(path.indexOf(":") + 1)
-                Toast.makeText(this, "" + path, Toast.LENGTH_LONG).show()
-                PopulateDB(path)
+               // path = path!!.substring(path.indexOf(":") + 1)
+               // Toast.makeText(this, "" + path, Toast.LENGTH_LONG).show()
+                PopulateDB(uri)
+
+
+
             }
         }
+    }
+
+//    @Throws(IOException::class)
+//    private fun readTextFromUri(uri: Uri): String? {
+//        val inputStream = contentResolver.openInputStream(uri)
+//        val reader = BufferedReader(
+//            InputStreamReader(
+//                inputStream
+//            )
+//        )
+//        val stringBuilder = java.lang.StringBuilder()
+//        var line: String?
+//        while (reader.readLine().also { line = it } != null) {
+//            stringBuilder.append(line)
+//        }
+//        fileInputStream.close()
+//        parcelFileDescriptor.close()
+//        return stringBuilder.toString()
+//    }
+
+    private fun PopulateDB(uri: Uri): String? {
+
+        //val file = File(input)
+        val text = StringBuilder()
+
+        val inputStream = contentResolver.openInputStream(uri)
+        val reader = BufferedReader(InputStreamReader(inputStream))
+
+
+        try {
+            //val br = BufferedReader(FileReader(file))
+            //var line: String?
+
+            //val stringBuilder = java.lang.StringBuilder()
+            var line: String?
+
+            var produtoId: String?
+            var codBarras: String?
+            var descricao: String?
+
+            while (reader.readLine().also { line = it } != null) {
+
+                codBarras = line?.substring(0..15)
+                produtoId = line?.substring(16..23)
+                descricao = line?.substring(24..44)
+
+                var produto = Produtos(
+                    codBarras.toString().trim(),
+                    Integer.parseInt(produtoId.toString().trim()),
+                    descricao.toString().trim()
+                )
+
+                pAppViewModel.addProdutos(produto)
+
+            }
+            reader.close()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return text.toString()
+    }
+
+
+
+    private fun openDirectory(){
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).apply {
+            intent.addCategory(Intent.CATEGORY_OPENABLE)
+            intent.type = "text/*"
+            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+        }
+
+        startActivityForResult(intent, READ_REQUEST_CODE)
     }
 
     private fun clearDB() {
@@ -347,11 +382,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String?>,
-        grantResults: IntArray
-    ) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String?>, grantResults: IntArray) {
         if (requestCode == PERMISSON_REQUEST_STORAGE) {
             Toast.makeText(this, "Permission granted!", Toast.LENGTH_LONG).show()
         } else {

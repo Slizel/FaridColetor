@@ -10,6 +10,7 @@
         android:id="@+id/nomeDoArquivo"
         android:hint="Digite o nome do arquivo"
         android:inputType="text"
+        android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

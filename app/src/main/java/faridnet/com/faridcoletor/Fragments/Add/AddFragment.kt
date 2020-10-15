@@ -1,5 +1,7 @@
 package faridnet.com.faridcoletor.Fragments.Add
 
+import android.content.Context
+import android.content.Context.INPUT_METHOD_SERVICE
 import android.media.AudioAttributes
 import android.media.AudioManager
 import android.media.SoundPool
@@ -11,10 +13,11 @@ import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.*
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
@@ -24,10 +27,11 @@ import faridnet.com.faridcoletor.R
 import faridnet.com.faridcoletor.Viewmodel.AppViewModel
 import kotlinx.android.synthetic.main.fragment_add.*
 import kotlinx.android.synthetic.main.fragment_add.view.*
-import kotlinx.android.synthetic.main.password_dialog.view.*
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
+
+
 class AddFragment : Fragment() {
 
     private lateinit var cAppViewModel: AppViewModel
@@ -80,6 +84,11 @@ class AddFragment : Fragment() {
         val txtEditCodBarras = view.editTextTextCodBarras
         val txtEditQuantidade = view.editTextQuantidade
 
+        txtEditCodBarras.requestFocus()
+        txtEditCodBarras?.showKeyboard()
+
+
+
         //Altera a exibição do do imput type do edit text para mostrar numeros ao inves de ****
         txtEditCodBarras.transformationMethod = null
         txtEditQuantidade.transformationMethod = null
@@ -126,6 +135,23 @@ class AddFragment : Fragment() {
                     } else if (txtEditCodBarras.text.toString().length == 1) {
 
                         txtEditQuantidade.requestFocus()
+
+                    }else if(txtEditCodBarras.text.toString().length == 9){
+
+                        editTextTextCodBarras.error = "Não temos código de barras com 9 digitos"
+
+                    }else if(txtEditCodBarras.text.toString().length == 10){
+
+                        editTextTextCodBarras.error = "Não temos código de barras com 10 digitos"
+
+                    }else if(txtEditCodBarras.text.toString().length == 11){
+
+                        editTextTextCodBarras.error = "Não temos código de barras com 11 digitos"
+
+                    }else if(txtEditCodBarras.text.toString().length == 12){
+
+                        editTextTextCodBarras.error = "Não temos código de barras com 12 digitos"
+
                     }
                 }
                 handler.postDelayed(workRunnable, 1200)
@@ -134,7 +160,11 @@ class AddFragment : Fragment() {
 
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
 
-            override fun afterTextChanged(s: Editable) {}
+            override fun afterTextChanged(s: Editable) {
+                   // view.editTextQuantidade.isEnabled = true
+                   // view.editTextQuantidade.isFocusable = true
+
+            }
         })
 
         txtEditCodBarras.setOnFocusChangeListener { _, hasFocus ->
@@ -142,6 +172,7 @@ class AddFragment : Fragment() {
             if (!hasFocus && txtEditCodBarras.text.toString() != "") {
 
                 lifecycleScope.launch {
+
                     val codBarras = editTextTextCodBarras.text.toString()
                     ConsultaCodBarras(codBarras)
                 }
@@ -185,8 +216,8 @@ class AddFragment : Fragment() {
                                 editTextQuantidade.setOnKeyListener(object : View.OnKeyListener {override fun onKey(v: View?,keyCode: Int, event: KeyEvent): Boolean {
                                         if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
                                              if(editTextQuantidade.text.toString() != ""){
-                                            insertDataToDatabase()
-                                                 LimpaCampos()
+                                                insertDataToDatabase()
+                                                 userVisibleHint = true
                                             }
                                             return true
                                         }
@@ -202,9 +233,8 @@ class AddFragment : Fragment() {
                                 editTextTextCodBarras.error = "Já existe uma contagem gravada para este código"
                                 editTextQuantidade.error = "O que você digitar será somado a quantidade existente"
 
-                                //Se o ViewTextContagem tem valor é porque já existe um Id cadastrado com uma qtde
+
                                 txtEditQuantidade.setOnKeyListener(object : View.OnKeyListener { override fun onKey(v: View?, keyCode: Int, event: KeyEvent): Boolean {
-                                        // if the event is a key down event on the enter button
                                         if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
 
                                             if (ViewTextContagens.text != "") {
@@ -230,8 +260,8 @@ class AddFragment : Fragment() {
                                                     //update DB
                                                     mAppViewModel.updateContagens(updateContagem)
                                                     successfulBeep()
-                                                    //userVisibleHint = true
-                                                    LimpaCampos()
+                                                    userVisibleHint = true
+                                                    //LimpaCampos()
                                                 }
                                                 Toast.makeText(
                                                     requireContext(),
@@ -288,6 +318,7 @@ class AddFragment : Fragment() {
             val produto = pAppViewModel.loadProdutobyCodBarra(codBarras)
 
             if (produto != null) {
+
 
                 ViewTextDescricao.text = produto.produtoId.toString() + " - " + produto.descricao
                 val contagen = cAppViewModel.loadContagens(produto.produtoId.toString())
@@ -380,6 +411,7 @@ class AddFragment : Fragment() {
                 Toast.makeText(requireContext(), "Adicionado com sucesso", Toast.LENGTH_LONG).show()
                 //userVisibleHint = true
                 LimpaCampos()
+
             } else {
                 wrongBeep()
                 Toast.makeText(requireContext(), "Código não existe no arquivo", Toast.LENGTH_LONG)
@@ -422,13 +454,17 @@ class AddFragment : Fragment() {
         ViewTextContagens?.text = ""
         txtEditCodBarras?.setText("")
         txtEditQuantidade?.setText("")
+        //txtEditQuantidade?.isFocusable = false
         txtEditCodBarras?.requestFocus()
+
+
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
-        editTextQuantidade.setText("")
-        editTextTextCodBarras.setText("")
+
+        //editTextQuantidade.setText("")
+        //editTextTextCodBarras.setText("")
         if (isVisibleToUser) {
             if (getFragmentManager() != null) {
                 getFragmentManager()
@@ -438,6 +474,19 @@ class AddFragment : Fragment() {
                     ?.commit();
             }
         }
+
+        LimpaCampos()
+    }
+
+    fun View.showKeyboard() {
+        this.requestFocus()
+        val inputMethodManager = context.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
+    }
+
+    fun View.hideKeyboard() {
+        val inputMethodManager = context.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(windowToken, 0)
     }
 
     fun playBeep() {
