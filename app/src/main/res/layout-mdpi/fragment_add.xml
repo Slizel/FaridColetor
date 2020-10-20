@@ -4,27 +4,48 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="35sp"
+    android:padding="52sp"
     tools:context=".Fragments.Add.AddFragment">
 
-    <EditText
-        android:id="@+id/editTextTextCodBarras"
+
+    <LinearLayout
+        android:id="@+id/linearlayoutAddFragment1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="150dp"
-        android:ems="10"
-        android:focusable="true"
-        android:hint="Código de Barras"
-        android:imeOptions="actionGo"
-        android:inputType="numberPassword"
-        android:digits="1234567890"
-        android:maxLength="13"
-        android:nextFocusForward="@+id/editTextQuantidade"
-        app:layout_constraintBottom_toTopOf="@+id/linearlayoutAddFragment"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:orientation="horizontal"
+        android:paddingTop="20sp"
+        tools:layout_editor_absoluteX="43dp"
+        tools:layout_editor_absoluteY="-58dp">
+
+        <EditText
+            android:id="@+id/editTextTextCodBarras"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="150dp"
+            android:layout_weight="1"
+            android:digits="1234567890"
+            android:ems="10"
+            android:focusable="true"
+            android:hint="Código de Barras"
+            android:imeOptions="actionGo"
+            android:inputType="numberPassword"
+            android:maxLength="13"
+            android:nextFocusForward="@+id/editTextQuantidade"
+            app:layout_constraintBottom_toTopOf="@+id/linearlayoutAddFragment"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/scan_buttom"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="150dp"
+            android:src="@drawable/ic_baseline_center_focus_weak_24"
+            android:text="Scan" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/linearlayoutAddFragment"
@@ -32,9 +53,9 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.625"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextCodBarras">
+        app:layout_constraintTop_toBottomOf="@+id/linearlayoutAddFragment1">
 
         <EditText
             android:id="@+id/editTextQuantidade"
@@ -59,9 +80,8 @@
             android:ems="10"
             android:hint="Qtd"
             android:inputType="textPersonName"
-            android:textSize="20sp" />
+            android:textSize="14sp" />
     </LinearLayout>
-
 
     <TextView
         android:id="@+id/ViewTextDescricao"
@@ -72,7 +92,7 @@
         android:focusable="false"
         android:hint="Quant."
         android:inputType="textPersonName"
-        android:textSize="20sp"
+        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -83,11 +103,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="Adicionar"
+        android:layout_marginBottom="200dp"
         android:focusable="false"
+        android:text="Adicionar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.357"
+        app:layout_constraintHorizontal_bias="0.37"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ViewTextDescricao"
         app:layout_constraintVertical_bias="0.07" />

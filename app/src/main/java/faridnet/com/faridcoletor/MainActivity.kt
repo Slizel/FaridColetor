@@ -11,13 +11,13 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Button
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupActionBarWithNavController
 import faridnet.com.faridcoletor.Data.AppDatabase
@@ -26,14 +26,15 @@ import faridnet.com.faridcoletor.Model.ProgressDialog
 import faridnet.com.faridcoletor.Viewmodel.AppViewModel
 import kotlinx.android.synthetic.main.nomedoarquivo_dialog.view.*
 import kotlinx.android.synthetic.main.password_dialog.view.*
+import kotlinx.coroutines.launch
 import java.io.*
 import java.util.*
+import kotlin.system.measureTimeMillis
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var pAppViewModel: AppViewModel
     private lateinit var cAppViewModel: AppViewModel
-    private lateinit var btnNomeArquivo: Button
 
     companion object {
 
@@ -44,10 +45,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         pAppViewModel = ViewModelProvider(this).get(AppViewModel::class.java)
         cAppViewModel = ViewModelProvider(this).get(AppViewModel::class.java)
-        //btnNomeArquivo = confirmaNomeDoArquivoBtn.
 
         //request permission
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -128,8 +127,6 @@ class MainActivity : AppCompatActivity() {
                 mAlertDialog.dismiss()
             }
         }
-
-
     }
 
     fun export() {
@@ -149,20 +146,20 @@ class MainActivity : AppCompatActivity() {
 
                     mDialogView.confirmaNomeDoArquivoBtn.setOnClickListener {
 
-
                             if (mDialogView.nomeDoArquivo.text.toString() != "") {
 
                                 try {
 
-
                                 filename = mDialogView.nomeDoArquivo.text.toString()
 
-                                val out: FileOutputStream = openFileOutput("$filename.csv", Context.MODE_PRIVATE)
-                                out.write(db.toString().toByteArray())
+                                val out: FileOutputStream = openFileOutput("$filename.txt", Context.MODE_PRIVATE)
+                                out.write(db.toString().replace("[","")
+                                    .replace("]","").replace(",","").toByteArray())
+
                                 out.close()
 
                                 val context: Context = applicationContext
-                                val filelocation = File(filesDir, "$filename.csv")
+                                val filelocation = File(filesDir, "$filename.txt")
                                 val path: Uri = FileProvider.getUriForFile(
                                     context,
                                     "faridnet.com.faridcoletor",
@@ -171,7 +168,7 @@ class MainActivity : AppCompatActivity() {
                                     mAlertDialog.dismiss()
 
                                 val fileIntent = Intent(Intent.ACTION_SEND)
-                                fileIntent.type = "text/csv"
+                                fileIntent.type = "text/txt"
                                 fileIntent.putExtra(Intent.EXTRA_SUBJECT, "Data")
                                 fileIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                                 fileIntent.putExtra(Intent.EXTRA_STREAM, path)
@@ -179,8 +176,6 @@ class MainActivity : AppCompatActivity() {
                                 } catch (e: Exception) {
                                     e.printStackTrace()
                                 }
-
-
 
                             } else {
                                 mAlertDialog.dismiss()
@@ -191,10 +186,7 @@ class MainActivity : AppCompatActivity() {
         }.start()
     }
 
-
     private fun performFileSearch() {
-        var dialog = ProgressDialog.progressDialog(this)
-        dialog.show()
 
         //Alert Dialog
         val builder = AlertDialog.Builder(this)
@@ -204,17 +196,10 @@ class MainActivity : AppCompatActivity() {
             intent.addCategory(Intent.CATEGORY_OPENABLE)
             intent.type = "text/*"
             startActivityForResult(intent, READ_REQUEST_CODE)
+
         }
 
-        Handler().postDelayed(
-            {
-                dialog.dismiss()
-            },
-            20000 // value in milliseconds
-        )
-
         builder.setNegativeButton("Não") { _, _ ->
-            dialog.dismiss()
         }
         builder.setTitle("Importar Dados")
         builder.setMessage("Tem certeza que deseja importar os dados?")
@@ -232,84 +217,60 @@ class MainActivity : AppCompatActivity() {
                // path = path!!.substring(path.indexOf(":") + 1)
                // Toast.makeText(this, "" + path, Toast.LENGTH_LONG).show()
                 PopulateDB(uri)
-
-
-
             }
         }
     }
 
-//    @Throws(IOException::class)
-//    private fun readTextFromUri(uri: Uri): String? {
-//        val inputStream = contentResolver.openInputStream(uri)
-//        val reader = BufferedReader(
-//            InputStreamReader(
-//                inputStream
-//            )
-//        )
-//        val stringBuilder = java.lang.StringBuilder()
-//        var line: String?
-//        while (reader.readLine().also { line = it } != null) {
-//            stringBuilder.append(line)
-//        }
-//        fileInputStream.close()
-//        parcelFileDescriptor.close()
-//        return stringBuilder.toString()
-//    }
-
     private fun PopulateDB(uri: Uri): String? {
-
-        //val file = File(input)
         val text = StringBuilder()
 
-        val inputStream = contentResolver.openInputStream(uri)
-        val reader = BufferedReader(InputStreamReader(inputStream))
+                var dialog = ProgressDialog.progressDialog(this)
 
 
-        try {
-            //val br = BufferedReader(FileReader(file))
-            //var line: String?
+                val inputStream = contentResolver.openInputStream(uri)
+                val reader = BufferedReader(InputStreamReader(inputStream))
 
-            //val stringBuilder = java.lang.StringBuilder()
-            var line: String?
+                try {
 
-            var produtoId: String?
-            var codBarras: String?
-            var descricao: String?
+                    //val br = BufferedReader(FileReader(file))
+                    //var line: String?
 
-            while (reader.readLine().also { line = it } != null) {
+                    //val stringBuilder = java.lang.StringBuilder()
+                    var line: String?
 
-                codBarras = line?.substring(0..15)
-                produtoId = line?.substring(16..23)
-                descricao = line?.substring(24..44)
+                    var produtoId: String?
+                    var codBarras: String?
+                    var descricao: String?
 
-                var produto = Produtos(
-                    codBarras.toString().trim(),
-                    Integer.parseInt(produtoId.toString().trim()),
-                    descricao.toString().trim()
-                )
+                    while (reader.readLine().also { line = it } != null) {
+                        dialog.show()
 
-                pAppViewModel.addProdutos(produto)
+                        codBarras = line?.substring(0..15)
+                        produtoId = line?.substring(16..23)
+                        descricao = line?.substring(24..44)
 
-            }
-            reader.close()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
+                        var produto = Produtos(
+                            codBarras.toString().trim(),
+                            Integer.parseInt(produtoId.toString().trim()),
+                            descricao.toString().trim()
+                        )
+
+                        pAppViewModel.addProdutos(produto)
+                    }
+
+                    if(reader.readLine() == null){
+                        dialog.dismiss()
+                    }
+
+                    reader.close()
+
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+
         return text.toString()
     }
 
-
-
-    private fun openDirectory(){
-        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).apply {
-            intent.addCategory(Intent.CATEGORY_OPENABLE)
-            intent.type = "text/*"
-            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-        }
-
-        startActivityForResult(intent, READ_REQUEST_CODE)
-    }
 
     private fun clearDB() {
 
@@ -391,6 +352,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
+
 
 
 

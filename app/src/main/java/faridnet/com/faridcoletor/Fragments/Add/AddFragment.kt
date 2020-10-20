@@ -1,7 +1,8 @@
 package faridnet.com.faridcoletor.Fragments.Add
 
-import android.content.Context
+import android.annotation.SuppressLint
 import android.content.Context.INPUT_METHOD_SERVICE
+import android.content.Intent
 import android.media.AudioAttributes
 import android.media.AudioManager
 import android.media.SoundPool
@@ -17,21 +18,22 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.google.zxing.integration.android.IntentIntegrator
 import faridnet.com.faridcoletor.Model.Contagens
 import faridnet.com.faridcoletor.R
 import faridnet.com.faridcoletor.Viewmodel.AppViewModel
 import kotlinx.android.synthetic.main.fragment_add.*
 import kotlinx.android.synthetic.main.fragment_add.view.*
 import kotlinx.coroutines.launch
+import java.text.DecimalFormat
+import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
-
+@Suppress("DEPRECATION")
 class AddFragment : Fragment() {
 
     private lateinit var cAppViewModel: AppViewModel
@@ -43,8 +45,6 @@ class AddFragment : Fragment() {
     private var sound2 = 0
     private var sound3 = 0
     private var sound4 = 0
-
-    private val model: AppViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -79,15 +79,14 @@ class AddFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_add, container, false)
 
+        val ImageButton = view.scan_buttom
         val viewTextDescricao = view.ViewTextDescricao
         val ViewTextContagens = view.ViewTextContagens
         val txtEditCodBarras = view.editTextTextCodBarras
         val txtEditQuantidade = view.editTextQuantidade
 
-        txtEditCodBarras.requestFocus()
+       // txtEditCodBarras.requestFocus()
         txtEditCodBarras?.showKeyboard()
-
-
 
         //Altera a exibição do do imput type do edit text para mostrar numeros ao inves de ****
         txtEditCodBarras.transformationMethod = null
@@ -99,7 +98,6 @@ class AddFragment : Fragment() {
             var workRunnable: Runnable? = null
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-
 
                 if (txtEditCodBarras.text.toString().length == 13) {
 
@@ -136,19 +134,19 @@ class AddFragment : Fragment() {
 
                         txtEditQuantidade.requestFocus()
 
-                    }else if(txtEditCodBarras.text.toString().length == 9){
+                    } else if (txtEditCodBarras.text.toString().length == 9) {
 
                         editTextTextCodBarras.error = "Não temos código de barras com 9 digitos"
 
-                    }else if(txtEditCodBarras.text.toString().length == 10){
+                    } else if (txtEditCodBarras.text.toString().length == 10) {
 
                         editTextTextCodBarras.error = "Não temos código de barras com 10 digitos"
 
-                    }else if(txtEditCodBarras.text.toString().length == 11){
+                    } else if (txtEditCodBarras.text.toString().length == 11) {
 
                         editTextTextCodBarras.error = "Não temos código de barras com 11 digitos"
 
-                    }else if(txtEditCodBarras.text.toString().length == 12){
+                    } else if (txtEditCodBarras.text.toString().length == 12) {
 
                         editTextTextCodBarras.error = "Não temos código de barras com 12 digitos"
 
@@ -161,11 +159,61 @@ class AddFragment : Fragment() {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
 
             override fun afterTextChanged(s: Editable) {
-                   // view.editTextQuantidade.isEnabled = true
-                   // view.editTextQuantidade.isFocusable = true
 
             }
         })
+
+        txtEditQuantidade.addTextChangedListener(object : TextWatcher {
+
+            var handler: Handler = Handler(Looper.getMainLooper() /*UI thread*/)
+            var workRunnable: Runnable? = null
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+            }
+
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+
+            override fun afterTextChanged(s: Editable) {
+
+                handler.removeCallbacks(workRunnable)
+                workRunnable = Runnable {
+
+               txtEditQuantidade.removeTextChangedListener(this)
+
+                try {
+                    var originalString = s.toString()
+                    val Doubleval: Double
+
+                    if (originalString.contains(",")) {
+                        originalString = originalString.replace(",".toRegex(), "")
+                    }
+
+                    Doubleval = originalString.toDouble()
+
+                    val formatter: DecimalFormat =
+                        NumberFormat.getInstance(Locale.US) as DecimalFormat
+                    formatter.applyPattern("####0.000")
+
+                    val formattedString: String = formatter.format(Doubleval)
+
+                    //setting text after format to EditText
+                    txtEditQuantidade.setText(formattedString)
+                    txtEditQuantidade.setSelection(txtEditQuantidade.text.length)
+                } catch (nfe: NumberFormatException) {
+                    nfe.printStackTrace()
+                }
+
+
+                txtEditQuantidade.addTextChangedListener(this)
+
+                }
+                handler.postDelayed(workRunnable, 800)
+
+
+
+            }
+        })
+
 
         txtEditCodBarras.setOnFocusChangeListener { _, hasFocus ->
 
@@ -192,12 +240,50 @@ class AddFragment : Fragment() {
             btnAdd()
         }
 
+
+        ImageButton.setOnClickListener(View.OnClickListener {
+            scanFromFragment()
+
+        })
+
+
         setHasOptionsMenu(true)
 
         return view
     }
 
-    private fun AdicionarOuSomarActionTeclado(txtEditCodBarras: EditText, view: View, viewTextDescricao: TextView, ViewTextContagens: TextView, txtEditQuantidade: EditText) {
+    fun scanFromFragment() {
+        IntentIntegrator.forSupportFragment(this).initiateScan()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        val intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
+        if (intentResult != null) {
+            if (intentResult.contents != null) {
+                alert("Scan realizado")
+                editTextTextCodBarras.setText(intentResult.contents)
+
+            } else {
+
+                alert("Scan cancelado")
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data)
+        }
+    }
+
+    private fun alert(msg: String) {
+        Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show()
+    }
+
+    private fun AdicionarOuSomarActionTeclado(
+        txtEditCodBarras: EditText,
+        view: View,
+        viewTextDescricao: TextView,
+        ViewTextContagens: TextView,
+        txtEditQuantidade: EditText
+    ) {
 
         txtEditCodBarras.setOnFocusChangeListener { _, hasFocus ->
 
@@ -213,16 +299,22 @@ class AddFragment : Fragment() {
                             viewTextDescricao.text =
                                 produto.produtoId.toString() + " - " + produto.descricao
 
-                                editTextQuantidade.setOnKeyListener(object : View.OnKeyListener {override fun onKey(v: View?,keyCode: Int, event: KeyEvent): Boolean {
+                                editTextQuantidade.setOnKeyListener(object : View.OnKeyListener {
+                                    override fun onKey(
+                                        v: View?,
+                                        keyCode: Int,
+                                        event: KeyEvent
+                                    ): Boolean {
                                         if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
-                                             if(editTextQuantidade.text.toString() != ""){
+                                            if (editTextQuantidade.text.toString() != "") {
                                                 insertDataToDatabase()
-                                                 userVisibleHint = true
+                                                userVisibleHint = true
                                             }
                                             return true
                                         }
-                                    return false
-                                } })
+                                        return false
+                                    }
+                                })
 
                             val contagens = cAppViewModel.loadContagens(produto.produtoId.toString())
 
@@ -233,8 +325,13 @@ class AddFragment : Fragment() {
                                 editTextTextCodBarras.error = "Já existe uma contagem gravada para este código"
                                 editTextQuantidade.error = "O que você digitar será somado a quantidade existente"
 
-
-                                txtEditQuantidade.setOnKeyListener(object : View.OnKeyListener { override fun onKey(v: View?, keyCode: Int, event: KeyEvent): Boolean {
+                                txtEditQuantidade.setOnKeyListener(object : View.OnKeyListener {
+                                    @SuppressLint("SimpleDateFormat")
+                                    override fun onKey(
+                                        v: View?,
+                                        keyCode: Int,
+                                        event: KeyEvent
+                                    ): Boolean {
                                         if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
 
                                             if (ViewTextContagens.text != "") {
@@ -253,7 +350,7 @@ class AddFragment : Fragment() {
                                                         currentDate
                                                     )
 
-                                                    var soma =
+                                                    val soma =
                                                         qtde.toDouble() + contagens.quantidade
                                                     ViewTextContagens.text = soma.toString()
 
@@ -384,6 +481,7 @@ class AddFragment : Fragment() {
     }
 
     // Database
+    @SuppressLint("SimpleDateFormat")
     private fun insertDataToDatabase() {
         val codBarras = editTextTextCodBarras.text.toString()
         val qtde = editTextQuantidade.text.toString()
@@ -392,8 +490,8 @@ class AddFragment : Fragment() {
         if (inputCheck(codBarras, qtde)) {
             var pos = ViewTextDescricao.text.indexOf("-")
             if (pos > 0) {
-                var input: CharSequence = ViewTextDescricao.getText().substring(0..pos - 2)
-                var prodId: String = input.toString()
+                val input: CharSequence = ViewTextDescricao.text.substring(0..pos - 2)
+                val prodId: String = input.toString()
 
                 val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
                 val currentDate = sdf.format(Date())
@@ -457,17 +555,15 @@ class AddFragment : Fragment() {
         //txtEditQuantidade?.isFocusable = false
         txtEditCodBarras?.requestFocus()
 
-
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
 
-        //editTextQuantidade.setText("")
-        //editTextTextCodBarras.setText("")
         if (isVisibleToUser) {
-            if (getFragmentManager() != null) {
-                getFragmentManager()
+            if (fragmentManager != null) {
+
+                fragmentManager
                     ?.beginTransaction()
                     ?.detach(this)
                     ?.attach(this)
@@ -505,6 +601,8 @@ class AddFragment : Fragment() {
         soundPool!!.play(sound4, 1f, 1f, 0, 0, 1f)
     }
 }
+
+
 
 
 
