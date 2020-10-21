@@ -154,7 +154,7 @@ class MainActivity : AppCompatActivity() {
 
                                 val out: FileOutputStream = openFileOutput("$filename.txt", Context.MODE_PRIVATE)
                                 out.write(db.toString().replace("[","")
-                                    .replace("]","").replace(",","").toByteArray())
+                                    .replace("]","").replace(",","").replace(" ","").toByteArray())
 
                                 out.close()
 
@@ -204,7 +204,6 @@ class MainActivity : AppCompatActivity() {
         builder.setTitle("Importar Dados")
         builder.setMessage("Tem certeza que deseja importar os dados?")
         builder.create().show()
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -225,8 +224,7 @@ class MainActivity : AppCompatActivity() {
         val text = StringBuilder()
 
                 var dialog = ProgressDialog.progressDialog(this)
-
-
+        
                 val inputStream = contentResolver.openInputStream(uri)
                 val reader = BufferedReader(InputStreamReader(inputStream))
 

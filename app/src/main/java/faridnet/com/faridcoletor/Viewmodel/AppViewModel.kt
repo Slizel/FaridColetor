@@ -62,7 +62,6 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
 //
 //    }
 
-
     fun addContagens(contagens: Contagens) {
         viewModelScope.launch(Dispatchers.IO) {
             Cont_repository.addContagem(contagens)

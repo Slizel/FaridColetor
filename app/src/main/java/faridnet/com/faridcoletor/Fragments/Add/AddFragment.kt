@@ -46,12 +46,8 @@ class AddFragment : Fragment() {
     private var sound3 = 0
     private var sound4 = 0
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
+    {
         // Criar objeto da View Model
         pAppViewModel = ViewModelProvider(this).get(AppViewModel::class.java)
         cAppViewModel = ViewModelProvider(this).get(AppViewModel::class.java)
@@ -60,6 +56,7 @@ class AddFragment : Fragment() {
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
 
         soundPool = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
             val audioAttributes = AudioAttributes.Builder()
                 .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
                 .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
@@ -68,8 +65,11 @@ class AddFragment : Fragment() {
                 .setMaxStreams(4)
                 .setAudioAttributes(audioAttributes)
                 .build()
+
         } else {
+
             SoundPool(4, AudioManager.STREAM_MUSIC, 0)
+
         }
         sound1 = soundPool!!.load(requireContext(), R.raw.beep, 1)
         sound2 = soundPool!!.load(requireContext(), R.raw.triplebeep, 1)
@@ -86,7 +86,7 @@ class AddFragment : Fragment() {
         val txtEditQuantidade = view.editTextQuantidade
 
        // txtEditCodBarras.requestFocus()
-        txtEditCodBarras?.showKeyboard()
+       // txtEditCodBarras?.showKeyboard()
 
         //Altera a exibição do do imput type do edit text para mostrar numeros ao inves de ****
         txtEditCodBarras.transformationMethod = null
@@ -99,22 +99,25 @@ class AddFragment : Fragment() {
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
 
-                if (txtEditCodBarras.text.toString().length == 13) {
-
-                    txtEditQuantidade.requestFocus()
-                }
-
                 handler.removeCallbacks(workRunnable)
                 workRunnable = Runnable {
 
-                    if (txtEditCodBarras.text.toString().length == 8) {
+                    if(txtEditCodBarras.text.toString().length == 13){
+                        txtEditQuantidade.requestFocus()
 
+                    } else if (txtEditCodBarras.text.toString().length == 8) {
+
+                        txtEditQuantidade.requestFocus()
 
                     } else if (txtEditCodBarras.text.toString().length == 7) {
 
                         txtEditQuantidade.requestFocus()
 
                     } else if (txtEditCodBarras.text.toString().length == 6) {
+
+                        txtEditQuantidade.requestFocus()
+
+                    } else if(txtEditCodBarras.text.toString().length == 5){
 
                         txtEditQuantidade.requestFocus()
 
@@ -137,23 +140,35 @@ class AddFragment : Fragment() {
                     } else if (txtEditCodBarras.text.toString().length == 9) {
 
                         editTextTextCodBarras.error = "Não temos código de barras com 9 digitos"
+                        wrongBeep()
+                        txtEditQuantidade.requestFocus()
 
                     } else if (txtEditCodBarras.text.toString().length == 10) {
 
                         editTextTextCodBarras.error = "Não temos código de barras com 10 digitos"
+                        wrongBeep()
+                        txtEditQuantidade.requestFocus()
 
                     } else if (txtEditCodBarras.text.toString().length == 11) {
 
                         editTextTextCodBarras.error = "Não temos código de barras com 11 digitos"
+                        wrongBeep()
+                        txtEditQuantidade.requestFocus()
 
                     } else if (txtEditCodBarras.text.toString().length == 12) {
 
                         editTextTextCodBarras.error = "Não temos código de barras com 12 digitos"
+                        wrongBeep()
+                        txtEditQuantidade.requestFocus()
 
+                    }else if(txtEditCodBarras.text.toString().length > 12) {
+                        editTextTextCodBarras.error = "Não temos código de barras maiores que 12 digitos"
+                        wrongBeep()
+                        txtEditQuantidade.requestFocus()
                     }
                 }
+
                 handler.postDelayed(workRunnable, 1200)
-
             }
 
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
@@ -162,58 +177,6 @@ class AddFragment : Fragment() {
 
             }
         })
-
-        txtEditQuantidade.addTextChangedListener(object : TextWatcher {
-
-            var handler: Handler = Handler(Looper.getMainLooper() /*UI thread*/)
-            var workRunnable: Runnable? = null
-
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-            }
-
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-
-            override fun afterTextChanged(s: Editable) {
-
-                handler.removeCallbacks(workRunnable)
-                workRunnable = Runnable {
-
-               txtEditQuantidade.removeTextChangedListener(this)
-
-                try {
-                    var originalString = s.toString()
-                    val Doubleval: Double
-
-                    if (originalString.contains(",")) {
-                        originalString = originalString.replace(",".toRegex(), "")
-                    }
-
-                    Doubleval = originalString.toDouble()
-
-                    val formatter: DecimalFormat =
-                        NumberFormat.getInstance(Locale.US) as DecimalFormat
-                    formatter.applyPattern("####0.000")
-
-                    val formattedString: String = formatter.format(Doubleval)
-
-                    //setting text after format to EditText
-                    txtEditQuantidade.setText(formattedString)
-                    txtEditQuantidade.setSelection(txtEditQuantidade.text.length)
-                } catch (nfe: NumberFormatException) {
-                    nfe.printStackTrace()
-                }
-
-
-                txtEditQuantidade.addTextChangedListener(this)
-
-                }
-                handler.postDelayed(workRunnable, 800)
-
-
-
-            }
-        })
-
 
         txtEditCodBarras.setOnFocusChangeListener { _, hasFocus ->
 
@@ -225,11 +188,11 @@ class AddFragment : Fragment() {
                     ConsultaCodBarras(codBarras)
                 }
             } else {
+
                 viewTextDescricao.text = ""
                 ViewTextContagens.text = ""
                 txtEditCodBarras.setText("")
                 txtEditQuantidade.setText("")
-
                 txtEditCodBarras.requestFocus()
             }
         }
@@ -240,22 +203,35 @@ class AddFragment : Fragment() {
             btnAdd()
         }
 
-
         ImageButton.setOnClickListener(View.OnClickListener {
             scanFromFragment()
-
         })
 
-
         setHasOptionsMenu(true)
-
         return view
+    }
+
+    fun playBeep() {
+        soundPool!!.play(sound1, 1f, 1f, 0, 0, 1f)
+    }
+
+    fun playTripleBeep() {
+        soundPool!!.play(sound2, 1f, 1f, 0, 0, 1f)
+    }
+
+    fun successfulBeep() {
+        soundPool!!.play(sound3, 1f, 1f, 0, 0, 1f)
+    }
+
+    fun wrongBeep() {
+        soundPool!!.play(sound4, 1f, 1f, 0, 0, 1f)
     }
 
     fun scanFromFragment() {
         IntentIntegrator.forSupportFragment(this).initiateScan()
     }
 
+    //Para usar o botão de Scan
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         val intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
@@ -265,9 +241,9 @@ class AddFragment : Fragment() {
                 editTextTextCodBarras.setText(intentResult.contents)
 
             } else {
-
                 alert("Scan cancelado")
             }
+
         } else {
             super.onActivityResult(requestCode, resultCode, data)
         }
@@ -277,13 +253,7 @@ class AddFragment : Fragment() {
         Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show()
     }
 
-    private fun AdicionarOuSomarActionTeclado(
-        txtEditCodBarras: EditText,
-        view: View,
-        viewTextDescricao: TextView,
-        ViewTextContagens: TextView,
-        txtEditQuantidade: EditText
-    ) {
+    private fun AdicionarOuSomarActionTeclado(txtEditCodBarras: EditText, view: View, viewTextDescricao: TextView, ViewTextContagens: TextView, txtEditQuantidade: EditText) {
 
         txtEditCodBarras.setOnFocusChangeListener { _, hasFocus ->
 
@@ -296,18 +266,14 @@ class AddFragment : Fragment() {
 
                         if (produto != null) {
                             view.editTextQuantidade.setTextIsSelectable(true)
-                            viewTextDescricao.text =
-                                produto.produtoId.toString() + " - " + produto.descricao
+                            viewTextDescricao.text = produto.produtoId.toString() + " - " + produto.descricao
 
                                 editTextQuantidade.setOnKeyListener(object : View.OnKeyListener {
-                                    override fun onKey(
-                                        v: View?,
-                                        keyCode: Int,
-                                        event: KeyEvent
-                                    ): Boolean {
+                                    override fun onKey(v: View?, keyCode: Int, event: KeyEvent): Boolean {
                                         if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
                                             if (editTextQuantidade.text.toString() != "") {
                                                 insertDataToDatabase()
+                                                playBeep()
                                                 userVisibleHint = true
                                             }
                                             return true
@@ -326,12 +292,9 @@ class AddFragment : Fragment() {
                                 editTextQuantidade.error = "O que você digitar será somado a quantidade existente"
 
                                 txtEditQuantidade.setOnKeyListener(object : View.OnKeyListener {
+
                                     @SuppressLint("SimpleDateFormat")
-                                    override fun onKey(
-                                        v: View?,
-                                        keyCode: Int,
-                                        event: KeyEvent
-                                    ): Boolean {
+                                    override fun onKey(v: View?, keyCode: Int, event: KeyEvent): Boolean {
                                         if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
 
                                             if (ViewTextContagens.text != "") {
@@ -343,12 +306,11 @@ class AddFragment : Fragment() {
 
                                                 //Edit text inicialmente é "", testar se foi colocado algum valor
                                                 if (editTextQuantidade.text.toString() != "") {
+
                                                     //Criar objeto
-                                                    val updateContagem = Contagens(
-                                                        produto.produtoId,
+                                                    val updateContagem = Contagens(produto.produtoId,
                                                         qtde.toDouble() + contagens.quantidade,
-                                                        currentDate
-                                                    )
+                                                        currentDate)
 
                                                     val soma =
                                                         qtde.toDouble() + contagens.quantidade
@@ -360,11 +322,7 @@ class AddFragment : Fragment() {
                                                     userVisibleHint = true
                                                     //LimpaCampos()
                                                 }
-                                                Toast.makeText(
-                                                    requireContext(),
-                                                    "Soma realizada!",
-                                                    Toast.LENGTH_LONG
-                                                ).show()
+                                                Toast.makeText(requireContext(), "Soma realizada!", Toast.LENGTH_LONG).show()
                                             }
                                             return true
                                         }
@@ -383,16 +341,13 @@ class AddFragment : Fragment() {
                             viewTextDescricao.text = ""
 
                             //view.editTextTextCodBarras.requestFocus()
-                            editTextTextCodBarras.error =
-                                "Produto não encontrado"
+                            editTextTextCodBarras.error = "Produto não encontrado"
                             wrongBeep()
+                            //userVisibleHint = true
 
-                            Toast.makeText(
-                                requireContext(),
-                                "Produto não encontrado",
-                                Toast.LENGTH_LONG
-                            ).show()
+                            Toast.makeText(requireContext(), "Produto não encontrado", Toast.LENGTH_LONG).show()
                             LimpaCampos()
+                           // userVisibleHint = true
                         }
                     }
                 }
@@ -434,14 +389,15 @@ class AddFragment : Fragment() {
                     "Código não encontrado!",
                     Toast.LENGTH_LONG
                 ).show()
-                LimpaCampos()
                 wrongBeep()
+                //LimpaCampos()
+                userVisibleHint = true
+
             }
         }
     }
 
     private fun Soma() {
-
                     lifecycleScope.launch {
                         val produto =
                             pAppViewModel.loadProdutobyCodBarra(editTextTextCodBarras.text.toString())
@@ -463,17 +419,15 @@ class AddFragment : Fragment() {
                                         qtde.toDouble() + contagem.quantidade,
                                         currentDate
                                     )
+
                                     //update DB
                                     mAppViewModel.updateContagens(updateContagem)
                                     successfulBeep()
                                     //userVisibleHint = true
-                                    LimpaCampos()
+                                    //LimpaCampos()
+                                    userVisibleHint = true
 
-                                    Toast.makeText(
-                                        requireContext(),
-                                        "Soma realizada!",
-                                        Toast.LENGTH_LONG
-                                    ).show()
+                                    Toast.makeText(requireContext(), "Soma realizada!", Toast.LENGTH_LONG).show()
                                 }
                             }
                         }
@@ -497,11 +451,7 @@ class AddFragment : Fragment() {
                 val currentDate = sdf.format(Date())
 
                 //Create Product Object
-                val contagem = Contagens(
-                    Integer.parseInt(prodId),
-                    qtde.toDouble(),
-                    currentDate.toString()
-                )
+                val contagem = Contagens(Integer.parseInt(prodId), qtde.toDouble(), currentDate.toString())
 
                 // Add Data to Database
                 cAppViewModel.addContagens(contagem)
@@ -524,13 +474,10 @@ class AddFragment : Fragment() {
     }
 
     private fun inputCheck(codBarras: String, qtde: String): Boolean {
-        return !(TextUtils.isEmpty(codBarras) && TextUtils.isEmpty(qtde) || TextUtils.isEmpty(
-            codBarras
-        ) || TextUtils.isEmpty(qtde))
+        return !(TextUtils.isEmpty(codBarras) && TextUtils.isEmpty(qtde) || TextUtils.isEmpty(codBarras) || TextUtils.isEmpty(qtde))
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        menu.clear()
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) { menu.clear()
         inflater.inflate(R.menu.main_menu, menu)
     }
 
@@ -574,32 +521,16 @@ class AddFragment : Fragment() {
         LimpaCampos()
     }
 
-    fun View.showKeyboard() {
-        this.requestFocus()
-        val inputMethodManager = context.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-        inputMethodManager.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
-    }
+//    fun View.showKeyboard() {
+//        this.requestFocus()
+//        val inputMethodManager = context.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+//        inputMethodManager.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
+//    }
 
-    fun View.hideKeyboard() {
-        val inputMethodManager = context.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-        inputMethodManager.hideSoftInputFromWindow(windowToken, 0)
-    }
-
-    fun playBeep() {
-        soundPool!!.play(sound1, 1f, 1f, 0, 0, 1f)
-    }
-
-    fun playTripleBeep() {
-        soundPool!!.play(sound2, 1f, 1f, 0, 0, 1f)
-    }
-
-    fun successfulBeep() {
-        soundPool!!.play(sound3, 1f, 1f, 0, 0, 1f)
-    }
-
-    fun wrongBeep() {
-        soundPool!!.play(sound4, 1f, 1f, 0, 0, 1f)
-    }
+//    fun View.hideKeyboard() {
+//        val inputMethodManager = context.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+//        inputMethodManager.hideSoftInputFromWindow(windowToken, 0)
+//    }
 }
 
 

@@ -5,6 +5,8 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.android.parcel.Parcelize
+import java.math.BigDecimal
+import java.math.RoundingMode
 import java.text.DecimalFormat
 
 @Parcelize
@@ -28,7 +30,9 @@ data class Contagens(
     override fun toString(): String {
 
         val qtde = quantidade
-        val df = DecimalFormat("000000000")
+        //val qtde = BigDecimal(quantidade).setScale(3,RoundingMode.HALF_EVEN)
+       // val decimal = BigDecimal(quantidade).setScale(3, RoundingMode.UNNECESSARY)
+        val df = DecimalFormat("######,###000000.000")
        // val df = DecimalFormat("######,###")
 
         val dfCodInternoA = DecimalFormat("0000000000000000")
@@ -38,7 +42,7 @@ data class Contagens(
         val codInterno8 = dfCodInternoB.format(produtoId)
 
 
-        var retorno = "00000001001001${codInterno16}${codInterno8}${df.format(qtde)}".trim() + "\n"
+        var retorno = "00000001001001${codInterno16}${codInterno8}${df.format(qtde)}\n"
 
         retorno = retorno.replace(".", "")
 
