@@ -94,7 +94,7 @@
         android:layout_marginTop="16dp"
         android:ems="10"
         android:focusable="false"
-        android:hint="Quant."
+        android:hint="Descrição"
         android:inputType="textPersonName"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"

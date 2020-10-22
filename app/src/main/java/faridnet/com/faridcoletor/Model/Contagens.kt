@@ -41,11 +41,9 @@ data class Contagens(
         val dfCodInternoB = DecimalFormat("00000000")
         val codInterno8 = dfCodInternoB.format(produtoId)
 
-
         var retorno = "00000001001001${codInterno16}${codInterno8}${df.format(qtde)}\n"
 
         retorno = retorno.replace(".", "")
-
 
         return retorno
     }

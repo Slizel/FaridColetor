@@ -48,8 +48,6 @@
 
     </LinearLayout>
 
-
-
     <LinearLayout
         android:id="@+id/linearlayoutAddFragment"
         android:layout_width="match_parent"
@@ -94,7 +92,7 @@
         android:layout_marginTop="16dp"
         android:ems="10"
         android:focusable="false"
-        android:hint="Quant."
+        android:hint="Descrição"
         android:inputType="textPersonName"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"

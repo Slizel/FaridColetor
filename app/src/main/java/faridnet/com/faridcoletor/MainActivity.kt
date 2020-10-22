@@ -221,14 +221,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun PopulateDB(uri: Uri): String? {
+
+        var dialog = ProgressDialog.progressDialog(this)
+
+
         val text = StringBuilder()
 
-                var dialog = ProgressDialog.progressDialog(this)
-        
                 val inputStream = contentResolver.openInputStream(uri)
                 val reader = BufferedReader(InputStreamReader(inputStream))
 
+
                 try {
+
+                    dialog.show()
 
                     //val br = BufferedReader(FileReader(file))
                     //var line: String?
@@ -256,9 +261,12 @@ class MainActivity : AppCompatActivity() {
                         pAppViewModel.addProdutos(produto)
                     }
 
-                    if(reader.readLine() == null){
-                        dialog.dismiss()
-                    }
+                    Handler().postDelayed(
+                        {
+                            dialog.dismiss()
+                        },
+                        180000 // value in milliseconds
+                    )
 
                     reader.close()
 
@@ -272,8 +280,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun clearDB() {
 
-        val mDialogView =
-            LayoutInflater.from(this).inflate(R.layout.password_dialog, null)
+        val mDialogView = LayoutInflater.from(this).inflate(R.layout.password_dialog, null)
 
         val mBuilder = AlertDialog.Builder(this).setCancelable(false)
             .setView(mDialogView)

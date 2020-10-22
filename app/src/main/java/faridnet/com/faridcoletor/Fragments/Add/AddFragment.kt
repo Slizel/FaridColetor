@@ -48,6 +48,7 @@ class AddFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
     {
+
         // Criar objeto da View Model
         pAppViewModel = ViewModelProvider(this).get(AppViewModel::class.java)
         cAppViewModel = ViewModelProvider(this).get(AppViewModel::class.java)
@@ -79,6 +80,8 @@ class AddFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_add, container, false)
 
+        val df = DecimalFormat("######,###000000.000")
+
         val ImageButton = view.scan_buttom
         val viewTextDescricao = view.ViewTextDescricao
         val ViewTextContagens = view.ViewTextContagens
@@ -92,91 +95,91 @@ class AddFragment : Fragment() {
         txtEditCodBarras.transformationMethod = null
         txtEditQuantidade.transformationMethod = null
 
-        txtEditCodBarras.addTextChangedListener(object : TextWatcher {
-
-            var handler: Handler = Handler(Looper.getMainLooper() /*UI thread*/)
-            var workRunnable: Runnable? = null
-
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-
-                handler.removeCallbacks(workRunnable)
-                workRunnable = Runnable {
-
-                    if(txtEditCodBarras.text.toString().length == 13){
-                        txtEditQuantidade.requestFocus()
-
-                    } else if (txtEditCodBarras.text.toString().length == 8) {
-
-                        txtEditQuantidade.requestFocus()
-
-                    } else if (txtEditCodBarras.text.toString().length == 7) {
-
-                        txtEditQuantidade.requestFocus()
-
-                    } else if (txtEditCodBarras.text.toString().length == 6) {
-
-                        txtEditQuantidade.requestFocus()
-
-                    } else if(txtEditCodBarras.text.toString().length == 5){
-
-                        txtEditQuantidade.requestFocus()
-
-                    } else if (txtEditCodBarras.text.toString().length == 4) {
-
-                        txtEditQuantidade.requestFocus()
-
-                    } else if (txtEditCodBarras.text.toString().length == 3) {
-
-                        txtEditQuantidade.requestFocus()
-
-                    } else if (txtEditCodBarras.text.toString().length == 2) {
-
-                        txtEditQuantidade.requestFocus()
-
-                    } else if (txtEditCodBarras.text.toString().length == 1) {
-
-                        txtEditQuantidade.requestFocus()
-
-                    } else if (txtEditCodBarras.text.toString().length == 9) {
-
-                        editTextTextCodBarras.error = "Não temos código de barras com 9 digitos"
-                        wrongBeep()
-                        txtEditQuantidade.requestFocus()
-
-                    } else if (txtEditCodBarras.text.toString().length == 10) {
-
-                        editTextTextCodBarras.error = "Não temos código de barras com 10 digitos"
-                        wrongBeep()
-                        txtEditQuantidade.requestFocus()
-
-                    } else if (txtEditCodBarras.text.toString().length == 11) {
-
-                        editTextTextCodBarras.error = "Não temos código de barras com 11 digitos"
-                        wrongBeep()
-                        txtEditQuantidade.requestFocus()
-
-                    } else if (txtEditCodBarras.text.toString().length == 12) {
-
-                        editTextTextCodBarras.error = "Não temos código de barras com 12 digitos"
-                        wrongBeep()
-                        txtEditQuantidade.requestFocus()
-
-                    }else if(txtEditCodBarras.text.toString().length > 12) {
-                        editTextTextCodBarras.error = "Não temos código de barras maiores que 12 digitos"
-                        wrongBeep()
-                        txtEditQuantidade.requestFocus()
-                    }
-                }
-
-                handler.postDelayed(workRunnable, 1200)
-            }
-
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-
-            override fun afterTextChanged(s: Editable) {
-
-            }
-        })
+//        txtEditCodBarras.addTextChangedListener(object : TextWatcher {
+//
+//            var handler: Handler = Handler(Looper.getMainLooper() /*UI thread*/)
+//            var workRunnable: Runnable? = null
+//
+//            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+//
+//                handler.removeCallbacks(workRunnable)
+//                workRunnable = Runnable {
+//
+//                    if(txtEditCodBarras.text.toString().length == 13){
+//                        txtEditQuantidade.requestFocus()
+//
+//                    } else if (txtEditCodBarras.text.toString().length == 8) {
+//
+//                        txtEditQuantidade.requestFocus()
+//
+//                    } else if (txtEditCodBarras.text.toString().length == 7) {
+//
+//                        txtEditQuantidade.requestFocus()
+//
+//                    } else if (txtEditCodBarras.text.toString().length == 6) {
+//
+//                        txtEditQuantidade.requestFocus()
+//
+//                    } else if(txtEditCodBarras.text.toString().length == 5){
+//
+//                        txtEditQuantidade.requestFocus()
+//
+//                    } else if (txtEditCodBarras.text.toString().length == 4) {
+//
+//                        txtEditQuantidade.requestFocus()
+//
+//                    } else if (txtEditCodBarras.text.toString().length == 3) {
+//
+//                        txtEditQuantidade.requestFocus()
+//
+//                    } else if (txtEditCodBarras.text.toString().length == 2) {
+//
+//                        txtEditQuantidade.requestFocus()
+//
+//                    } else if (txtEditCodBarras.text.toString().length == 1) {
+//
+//                        txtEditQuantidade.requestFocus()
+//
+//                    } else if (txtEditCodBarras.text.toString().length == 9) {
+//
+//                        editTextTextCodBarras.error = "Não temos código de barras com 9 digitos"
+//                        wrongBeep()
+//                        txtEditQuantidade.requestFocus()
+//
+//                    } else if (txtEditCodBarras.text.toString().length == 10) {
+//
+//                        editTextTextCodBarras.error = "Não temos código de barras com 10 digitos"
+//                        wrongBeep()
+//                        txtEditQuantidade.requestFocus()
+//
+//                    } else if (txtEditCodBarras.text.toString().length == 11) {
+//
+//                        editTextTextCodBarras.error = "Não temos código de barras com 11 digitos"
+//                        wrongBeep()
+//                        txtEditQuantidade.requestFocus()
+//
+//                    } else if (txtEditCodBarras.text.toString().length == 12) {
+//
+//                        editTextTextCodBarras.error = "Não temos código de barras com 12 digitos"
+//                        wrongBeep()
+//                        txtEditQuantidade.requestFocus()
+//
+//                    }else if(txtEditCodBarras.text.toString().length > 12) {
+//                        editTextTextCodBarras.error = "Não temos código de barras maiores que 13 digitos"
+//                        wrongBeep()
+//                        txtEditQuantidade.requestFocus()
+//                    }
+//                }
+//
+//                handler.postDelayed(workRunnable, 1200)
+//            }
+//
+//            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+//
+//            override fun afterTextChanged(s: Editable) {
+//
+//            }
+//        })
 
         txtEditCodBarras.setOnFocusChangeListener { _, hasFocus ->
 
@@ -273,8 +276,9 @@ class AddFragment : Fragment() {
                                         if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
                                             if (editTextQuantidade.text.toString() != "") {
                                                 insertDataToDatabase()
-                                                playBeep()
                                                 userVisibleHint = true
+                                                //LimpaCampos()
+                                                CodBarrarsFocus()
                                             }
                                             return true
                                         }
@@ -316,13 +320,25 @@ class AddFragment : Fragment() {
                                                         qtde.toDouble() + contagens.quantidade
                                                     ViewTextContagens.text = soma.toString()
 
-                                                    //update DB
-                                                    mAppViewModel.updateContagens(updateContagem)
-                                                    successfulBeep()
-                                                    userVisibleHint = true
-                                                    //LimpaCampos()
+                                                    if (qtde.toDouble() <= 999999.000) {
+
+                                                        //update DB
+                                                        mAppViewModel.updateContagens(updateContagem)
+                                                        successfulBeep()
+                                                        Toast.makeText(requireContext(), "Soma realizada!", Toast.LENGTH_LONG).show()
+                                                        userVisibleHint = true
+                                                        //LimpaCampos()
+                                                        CodBarrarsFocus()
+
+                                                    } else {
+
+                                                        Toast.makeText(requireContext(), "A quantidade não pode ser maior que 999999.000", Toast.LENGTH_SHORT).show()
+                                                        wrongBeep()
+                                                        LimpaQuantidade()
+                                                    }
+
                                                 }
-                                                Toast.makeText(requireContext(), "Soma realizada!", Toast.LENGTH_LONG).show()
+
                                             }
                                             return true
                                         }
@@ -343,11 +359,10 @@ class AddFragment : Fragment() {
                             //view.editTextTextCodBarras.requestFocus()
                             editTextTextCodBarras.error = "Produto não encontrado"
                             wrongBeep()
-                            //userVisibleHint = true
-
                             Toast.makeText(requireContext(), "Produto não encontrado", Toast.LENGTH_LONG).show()
-                            LimpaCampos()
-                           // userVisibleHint = true
+                              LimpaCampos()
+                                CodBarrarsFocus()
+                             //userVisibleHint = true
                         }
                     }
                 }
@@ -365,6 +380,7 @@ class AddFragment : Fragment() {
     }
 
     private fun ConsultaCodBarras(codBarras: String) {
+
         lifecycleScope.launch {
 
             val produto = pAppViewModel.loadProdutobyCodBarra(codBarras)
@@ -373,26 +389,21 @@ class AddFragment : Fragment() {
 
 
                 ViewTextDescricao.text = produto.produtoId.toString() + " - " + produto.descricao
-                val contagen = cAppViewModel.loadContagens(produto.produtoId.toString())
+                val contagem = cAppViewModel.loadContagens(produto.produtoId.toString())
                 //beep produto encontrado
 
-                if (contagen != null) {
+                if (contagem != null) {
                     playTripleBeep()
-                    ViewTextContagens.text = contagen.quantidade.toString()
+                    ViewTextContagens.text = contagem.quantidade.toString()
                     editTextTextCodBarras.error = "Já existe uma contagem gravada para este código"
-                    editTextQuantidade.error =
-                        "O que você digitar será somado a quantidade existente"
+                    editTextQuantidade.error = "O que você digitar será somado a quantidade existente"
                 }
             } else {
-                Toast.makeText(
-                    requireContext(),
-                    "Código não encontrado!",
-                    Toast.LENGTH_LONG
-                ).show()
+
+                Toast.makeText(requireContext(), "Código não encontrado!", Toast.LENGTH_LONG).show()
                 wrongBeep()
                 //LimpaCampos()
                 userVisibleHint = true
-
             }
         }
     }
@@ -402,9 +413,7 @@ class AddFragment : Fragment() {
                         val produto =
                             pAppViewModel.loadProdutobyCodBarra(editTextTextCodBarras.text.toString())
 
-                        if (produto != null) {
-                            view?.ViewTextDescricao?.text
-                                ?: produto.produtoId.toString() + " - " + produto.descricao
+                        if (produto != null) { view?.ViewTextDescricao?.text ?: produto.produtoId.toString() + " - " + produto.descricao
                             val contagem = cAppViewModel.loadContagens(produto.produtoId.toString())
                             if (contagem != null) {
 
@@ -420,14 +429,23 @@ class AddFragment : Fragment() {
                                         currentDate
                                     )
 
-                                    //update DB
-                                    mAppViewModel.updateContagens(updateContagem)
-                                    successfulBeep()
-                                    //userVisibleHint = true
-                                    //LimpaCampos()
-                                    userVisibleHint = true
+                                    if (qtde.toDouble() <= 999999.000) {
 
-                                    Toast.makeText(requireContext(), "Soma realizada!", Toast.LENGTH_LONG).show()
+                                        //update DB
+                                        mAppViewModel.updateContagens(updateContagem)
+                                        successfulBeep()
+                                        Toast.makeText(requireContext(), "Soma realizada!", Toast.LENGTH_LONG).show()
+                                        //userVisibleHint = true
+                                        LimpaCampos()
+                                        CodBarrarsFocus()
+
+                                    } else {
+
+                                        Toast.makeText(requireContext(), "A quantidade não pode ser maior que 999999.000", Toast.LENGTH_SHORT).show()
+                                        wrongBeep()
+                                        LimpaQuantidade()
+                                    }
+
                                 }
                             }
                         }
@@ -453,12 +471,25 @@ class AddFragment : Fragment() {
                 //Create Product Object
                 val contagem = Contagens(Integer.parseInt(prodId), qtde.toDouble(), currentDate.toString())
 
-                // Add Data to Database
-                cAppViewModel.addContagens(contagem)
-                playBeep()
-                Toast.makeText(requireContext(), "Adicionado com sucesso", Toast.LENGTH_LONG).show()
-                //userVisibleHint = true
-                LimpaCampos()
+
+                if (qtde.toDouble() <= 999999.000) {
+
+                    // Add Data to Database
+                    cAppViewModel.addContagens(contagem)
+                    playBeep()
+                    Toast.makeText(requireContext(), "Atualizado com sucesso!", Toast.LENGTH_SHORT).show()
+                    //userVisibleHint = true
+                    LimpaCampos()
+                    CodBarrarsFocus()
+
+
+                } else {
+
+                    Toast.makeText(requireContext(), "A quantidade não pode ser maior que 999999.000", Toast.LENGTH_SHORT).show()
+                    wrongBeep()
+                    LimpaQuantidade()
+                   // LimpaCampos()
+                }
 
             } else {
                 wrongBeep()
@@ -490,6 +521,7 @@ class AddFragment : Fragment() {
     }
 
     private fun LimpaCampos() {
+
         val viewTextDescricao = view?.ViewTextDescricao
         val ViewTextContagens = view?.ViewTextContagens
         val txtEditCodBarras = view?.editTextTextCodBarras
@@ -499,8 +531,19 @@ class AddFragment : Fragment() {
         ViewTextContagens?.text = ""
         txtEditCodBarras?.setText("")
         txtEditQuantidade?.setText("")
-        //txtEditQuantidade?.isFocusable = false
+
+    }
+
+    private fun CodBarrarsFocus(){
+
+        val txtEditCodBarras = view?.editTextTextCodBarras
         txtEditCodBarras?.requestFocus()
+    }
+
+    private fun LimpaQuantidade(){
+
+        val txtEditQuantidade = view?.editTextQuantidade
+        txtEditQuantidade?.setText("")
 
     }
 
@@ -515,10 +558,15 @@ class AddFragment : Fragment() {
                     ?.detach(this)
                     ?.attach(this)
                     ?.commit();
+
+                CodBarrarsFocus()
             }
+            CodBarrarsFocus()
         }
 
         LimpaCampos()
+        CodBarrarsFocus()
+
     }
 
 //    fun View.showKeyboard() {
@@ -531,6 +579,7 @@ class AddFragment : Fragment() {
 //        val inputMethodManager = context.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
 //        inputMethodManager.hideSoftInputFromWindow(windowToken, 0)
 //    }
+
 }
 
 
