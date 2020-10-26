@@ -265,7 +265,7 @@ class MainActivity : AppCompatActivity() {
                         {
                             dialog.dismiss()
                         },
-                        180000 // value in milliseconds
+                        360000 // value in milliseconds
                     )
 
                     reader.close()
