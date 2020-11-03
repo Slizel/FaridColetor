@@ -116,7 +116,6 @@ class MainActivity : AppCompatActivity() {
             if (password == senha) {
                 mAlertDialog.dismiss()
 
-
                 export()
 
                 Toast.makeText(this, "Compartilhamento iniciado!", Toast.LENGTH_SHORT)
@@ -229,8 +228,6 @@ class MainActivity : AppCompatActivity() {
 
                 val inputStream = contentResolver.openInputStream(uri)
                 val reader = BufferedReader(InputStreamReader(inputStream))
-
-
                 try {
 
                     dialog.show()

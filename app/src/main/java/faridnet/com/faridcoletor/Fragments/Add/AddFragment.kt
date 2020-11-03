@@ -106,25 +106,17 @@ class AddFragment : Fragment() {
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
                 if (txtEditCodBarras.text.toString() == "") {
-
                     viewTextDescricao.text = ""
                     ViewTextContagens.text = ""
                     txtEditQuantidade.setText("")
                     txtEditQuantidade.error = null
-
                 }
-
-
             }
 
             override fun afterTextChanged(p0: Editable?) {
 
             }
         })
-
-
-
-
 
         txtEditCodBarras.setOnFocusChangeListener { _, hasFocus ->
 
@@ -290,7 +282,6 @@ class AddFragment : Fragment() {
                                                         ViewTextContagens.text = ""
                                                         txtEditCodBarras.setText("")
                                                         HandleRequestFocus()
-
                                                     }
                                                 }
                                             }
@@ -305,7 +296,6 @@ class AddFragment : Fragment() {
                                 ViewTextContagens.text = ""
                                 editTextTextCodBarras.error = null
                                 editTextQuantidade.error = null
-
                             }
 
                         } else {
@@ -413,7 +403,6 @@ class AddFragment : Fragment() {
                                         wrongBeep()
                                         LimpaQuantidade()
                                     }
-
                                 }
                             }
                         }
@@ -438,7 +427,6 @@ class AddFragment : Fragment() {
 
                 //Create Product Object
                 val contagem = Contagens(Integer.parseInt(prodId), qtde.toDouble(), currentDate.toString())
-
 
                 if (qtde.toDouble() <= 999999.000) {
 

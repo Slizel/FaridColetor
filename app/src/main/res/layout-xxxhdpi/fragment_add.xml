@@ -69,7 +69,7 @@
             android:hint="Quantidade"
             android:imeOptions="actionGo"
             android:inputType="numberDecimal"
-            android:maxLength="6"
+            android:maxLength="10"
 
             />
 
