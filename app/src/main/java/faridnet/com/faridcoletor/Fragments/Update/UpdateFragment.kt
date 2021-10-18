@@ -25,7 +25,12 @@ class UpdateFragment : Fragment() {
 
     private lateinit var mAppViewModel: AppViewModel
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+
+    ): View? {
 
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_update, container, false)
@@ -76,19 +81,24 @@ class UpdateFragment : Fragment() {
                 qtde.toDouble(), currentDate
             )
 
-            mAppViewModel.updateContagens(updateContagem)
 
-            Toast.makeText(requireContext(), "Atualizado com sucesso!", Toast.LENGTH_SHORT).show()
+            if (qtde.toDouble() <= 999999.000) {
+
+                mAppViewModel.updateContagens(updateContagem)
+
+
+            } else {
+
+                Toast.makeText(requireContext(), "A quantidade não pode ser maior que 999999.000", Toast.LENGTH_SHORT).show()
+
+            }
+
 
             //Navigate back
             findNavController().navigate(R.id.action_updateFragment_to_listFragment)
 
         } else {
-            Toast.makeText(
-                requireContext(),
-                "Gentileza preencher todos os campos.",
-                Toast.LENGTH_SHORT
-            ).show()
+            Toast.makeText(requireContext(), "Gentileza preencher todos os campos.", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -100,7 +110,8 @@ class UpdateFragment : Fragment() {
 
     private fun deletarItem() {
 
-        val mDialogView = LayoutInflater.from(requireContext()).inflate(R.layout.password_dialog, null)
+        val mDialogView =
+            LayoutInflater.from(requireContext()).inflate(R.layout.password_dialog, null)
 
         val mBuilder =
             androidx.appcompat.app.AlertDialog.Builder(requireContext()).setCancelable(false)

@@ -1,17 +1,18 @@
 package faridnet.com.faridcoletor.Model
 
 import android.app.Dialog
-import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
+import faridnet.com.faridcoletor.MainActivity
 import faridnet.com.faridcoletor.R
+import kotlinx.coroutines.CoroutineScope
 
 
 class ProgressDialog {
 
     companion object {
-        fun progressDialog(context: Context): Dialog{
+        fun progressDialog(context: MainActivity): Dialog{
             val dialog = Dialog(context)
             val inflate = LayoutInflater.from(context).inflate(R.layout.progress_dialog, null)
             dialog.setContentView(inflate)

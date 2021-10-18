@@ -10,9 +10,12 @@ import faridnet.com.faridcoletor.Repository.ContagensRepository
 import faridnet.com.faridcoletor.Data.AppDatabase
 import faridnet.com.faridcoletor.Model.JoinContagemProduto
 import faridnet.com.faridcoletor.Model.Produtos
+import faridnet.com.faridcoletor.Model.ProgressDialog
 import faridnet.com.faridcoletor.Repository.ProdutosRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class AppViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -58,7 +61,6 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
 //        }
 //
 //    }
-
 
     fun addContagens(contagens: Contagens) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -116,5 +118,28 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch(Dispatchers.IO) {
             Cont_repository.deleteContagens(contagens)
         }
+    }
+
+    fun execute() = viewModelScope.launch {
+        onPreExecute()
+        val result = doInBackground() // runs in background thread without blocking the Main Thread
+        onPostExecute(result)
+    }
+
+    private suspend fun doInBackground(): String = withContext(Dispatchers.IO) { // to run code in Background Thread
+
+
+
+        return@withContext "SomeResult"
+    }
+
+    // Runs on the Main(UI) Thread
+    private fun onPreExecute() {
+
+    }
+
+    // Runs on the Main(UI) Thread
+    private fun onPostExecute(result: String) {
+
     }
 }

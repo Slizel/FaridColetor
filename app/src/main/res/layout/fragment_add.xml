@@ -18,7 +18,7 @@
         android:imeOptions="actionGo"
         android:inputType="numberPassword"
         android:digits="1234567890"
-        android:maxLength="13"
+        android:maxLength="20"
         android:nextFocusForward="@+id/editTextQuantidade"
         app:layout_constraintBottom_toTopOf="@+id/linearlayoutAddFragment"
         app:layout_constraintEnd_toEndOf="parent"
@@ -45,10 +45,8 @@
             android:ems="10"
             android:hint="Quantidade"
             android:imeOptions="actionGo"
-            android:inputType="number"
-            android:maxLength="6"
-
-            />
+            android:inputType="numberDecimal"
+            android:maxLength="10" />
 
         <TextView
             android:id="@+id/ViewTextContagens"
@@ -62,7 +60,6 @@
             android:textSize="20sp" />
     </LinearLayout>
 
-
     <TextView
         android:id="@+id/ViewTextDescricao"
         android:layout_width="match_parent"
@@ -70,7 +67,7 @@
         android:layout_marginTop="16dp"
         android:ems="10"
         android:focusable="false"
-        android:hint="Quant."
+        android:hint="Descrição"
         android:inputType="textPersonName"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"

@@ -7,24 +7,47 @@
     android:padding="35sp"
     tools:context=".Fragments.Add.AddFragment">
 
-    <EditText
-        android:id="@+id/editTextTextCodBarras"
+    <LinearLayout
+        android:id="@+id/linearlayoutAddFragment1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="150dp"
-        android:ems="10"
-        android:focusable="true"
-        android:hint="Código de Barras"
-        android:imeOptions="actionGo"
-        android:inputType="numberPassword"
-        android:digits="1234567890"
-        android:maxLength="13"
-        android:nextFocusForward="@+id/editTextQuantidade"
-        app:layout_constraintBottom_toTopOf="@+id/linearlayoutAddFragment"
+        android:orientation="horizontal"
+        android:paddingTop="20sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <EditText
+            android:id="@+id/editTextTextCodBarras"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_width="fill_parent"
+            android:layout_marginTop="150dp"
+            android:digits="1234567890"
+            android:ems="10"
+            android:focusable="true"
+            android:hint="Código de Barras"
+            android:imeOptions="actionGo"
+            android:inputType="numberPassword"
+            android:maxLength="20"
+            android:nextFocusForward="@+id/editTextQuantidade"
+            app:layout_constraintBottom_toTopOf="@+id/linearlayoutAddFragment"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/scan_buttom"
+            android:layout_marginTop="150dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_baseline_center_focus_weak_24"
+            android:text="Scan" />
+
+    </LinearLayout>
+
+
 
     <LinearLayout
         android:id="@+id/linearlayoutAddFragment"
@@ -34,7 +57,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextCodBarras">
+        app:layout_constraintTop_toBottomOf="@+id/linearlayoutAddFragment1">
 
         <EditText
             android:id="@+id/editTextQuantidade"
@@ -45,8 +68,8 @@
             android:ems="10"
             android:hint="Quantidade"
             android:imeOptions="actionGo"
-            android:inputType="number"
-            android:maxLength="6"
+            android:inputType="numberDecimal"
+            android:maxLength="10"
 
             />
 
@@ -70,7 +93,7 @@
         android:layout_marginTop="16dp"
         android:ems="10"
         android:focusable="false"
-        android:hint="Quant."
+        android:hint="Descrição"
         android:inputType="textPersonName"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
